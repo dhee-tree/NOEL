@@ -1,0 +1,29 @@
+{% extends "utils/base.html" %}
+{% block title %}Welcome to NOEL{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}" />
+{% endblock %}
+
+{% block main %}   
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center welcome">Welcome to NOEL</h1>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-12">
+                <p class="text-center">NOEL is an application for family and friends to play Secret Santa remotely accross the world.</p>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-12">
+                <a href="#" class="btn login-btn">Login</a>
+
+                <p class="notice-text">Noel is an invite only platform, please wait till you get an invitation from us or ask one of your friends.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
