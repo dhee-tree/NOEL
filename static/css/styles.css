@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Mountains+of+Christmas&family=PT+Serif&family=Pacifico&family=Pinyon+Script&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PT Serif', serif;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    background-color: #EEE2DE;
+    --primary-color: #B31312;
+    --secondary-color: #2B2A4C;
+    --bg-color: #EEE2DE;
+    --text-color: #EA906C;
+}
+
+/* NAVBAR */
+.bg-noel {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+.navbar-brand, .footer-brand {
+    font-family: 'Mountains of Christmas', serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--bg-color);
+}
+
+.navbar-brand:hover, .footer-brand:hover {
+    color: var(--text-color);
+}
+
+.navbar-toggler {
+    background-color: var(--bg-color);
+}
+
+.nav-item a {
+    color: var(--bg-color);
+    text-decoration: underline;
+}
+
+/* MAIN */
+main {
+    min-height: 100vh;
+    margin-top: .5rem;
+}
+
+/* FOOTER */
+
+.mb-2 a {
+    color: #000;
+    text-decoration: none;
+}

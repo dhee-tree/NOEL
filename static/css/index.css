@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Mountains+of+Christmas&family=Pacifico&family=Pinyon+Script&display=swap');
+
+.container-fluid {
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Berkshire Swash', serif;
+    font-size: 2.2rem;
+    margin-bottom: 12rem;
+}
+
+.login-btn {
+    background-color: var(--secondary-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 10rem;
+    height: 3rem;
+}
+
+.notice-text {
+    font-size: .9rem;
+    margin-top: 1rem;
+}
