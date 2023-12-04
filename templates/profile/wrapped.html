@@ -1,0 +1,31 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Unwrapping{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="wrapped-container">
+                    <div class="wrapped-text">
+                        <p>These are all the people left on {{ user_profile.group_id.group_name }}</p>
+                        <p>Pick one:</p>
+                        <p>{{ members_list }}</p>
+                    </div>
+                    {% for i in range %}
+                        <div class="wrapped">
+                            <p name="pick" id="pick" value="{{i}}"><i class="fa-solid fa-gift fa-beat-fade fa-2xl" style="color: #b31312;"></i></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
