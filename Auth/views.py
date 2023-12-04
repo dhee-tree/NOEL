@@ -28,10 +28,11 @@ class ConfirmView(View):
         return render(request, self.template_name, context)
         
     def post(self, request):
+        post_form = self.form(request.POST)
         code = request.POST.get('code')
         user = request.user
         user_profile = UserProfile.objects.get(user=user)
         if code == user_profile.auth_code:
             return redirect('home')
         else:
-            return HttpResponse("Invalid code")
+            return render(request, self.template_name, {'form': post_form, 'code_error': True})

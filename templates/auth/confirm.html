@@ -18,8 +18,11 @@
                             <p>So, to confirm it is you. <strong><em>Dancer</em></strong> just sent you a code.</p>
                             <em><strong><span>Enter your code from Dancer:</span></strong></em>
                             {{ form.code }}
+                            {% if code_error %}
+                                <p class="error-message">Code does not match. Please check and try again!</p>
+                            {% endif %}
                         </div>
-                        <button type="submit" class="login-btn">Confirm</button>
+                        <button type="submit" class="auth-btn">Confirm</button>
                     </form>
                 </div>
             </div>
