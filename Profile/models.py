@@ -14,6 +14,15 @@ class SantaGroup(models.Model):
     def __str__(self):
         return self.group_name
 
+class Pick(models.Model):
+    pick_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    full_name = models.CharField(max_length=50)
+    group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True)
+    date_picked = models.DateField(default=date.today)
+
+    def __str__(self):
+        return self.full_name
+
 class UserProfile(models.Model):
     gender_choices = (
         ('Male', 'Male'),
