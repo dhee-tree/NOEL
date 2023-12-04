@@ -16,16 +16,19 @@ class ConfirmView(View):
     form = None
 
     def get(self, request):
-        messages.info(request, 'Your need to login to access the 2FA page!')
-        user = request.user
-        user_profile = UserProfile.objects.get(user=user)
-        user_profile.auth_code = authCodeGenerator()
-        user_profile.save()
+        if request.user.is_authenticated:
+            return redirect('home')
+        else:
+            messages.info(request, 'Your need to login to access the 2FA page!')
+            user = request.user
+            user_profile = UserProfile.objects.get(user=user)
+            user_profile.auth_code = authCodeGenerator()
+            user_profile.save()
 
-        sending_email = sendEmail(request, user, user_profile.auth_code)
-        
-        context = {'user': user, 'form': self.form}
-        return render(request, self.template_name, context)
+            sending_email = sendEmail(request, user, user_profile.auth_code)
+
+            context = {'user': user, 'form': self.form}
+            return render(request, self.template_name, context)
         
     def post(self, request):
         post_form = self.form(request.POST)
