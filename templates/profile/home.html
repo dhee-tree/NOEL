@@ -1,2 +1,21 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Home{% endblock %}
+{% load static %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}" />
+{% endblock %}
 
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="confirm-form"> 
+                    <p>Ho Ho Ho {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}.</p>
+                    <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
+                    <p>There are {{ group_members_count }} other people in this group!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
