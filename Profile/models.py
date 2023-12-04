@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
+from Auth.utils import authCodeGenerator
 
 # Create your models here.
 class SantaGroup(models.Model):
@@ -17,6 +18,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.CharField(max_length=200, blank=True)    
     group_id = models.ForeignKey(SantaGroup, on_delete=models.SET_NULL, null=True)
+    password_changed = models.BooleanField(default=False)
+    auth_code = models.CharField(max_length=6, default=authCodeGenerator)
+    date_created = models.DateField(default=date.today)
+    date_updated = models.DateField(default=date.today)
 
     def __str__(self):
         return self.user.username
