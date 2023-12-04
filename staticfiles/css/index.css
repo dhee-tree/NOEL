@@ -22,6 +22,12 @@ h1 {
     height: 3rem;
 }
 
+.login-btn:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: #fff;
+}
+
 .notice-text {
     font-size: .9rem;
     margin-top: 1rem;
