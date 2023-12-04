@@ -16,7 +16,7 @@
     border: 3px solid #555;
 }
 
-.login-btn {
+.auth-btn {
     background-color: var(--secondary-color);
     color: white;
     margin: 20px 0;
@@ -26,4 +26,9 @@
     height: 3rem;
     border-radius: 15px;
     font-size: 2rem;
+}
+
+.auth-btn:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
 }
