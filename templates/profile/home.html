@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
 {% endblock %}
 
 {% block main %}
@@ -14,6 +14,14 @@
                     <p>Ho Ho Ho {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}.</p>
                     <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
                     <p>There are {{ group_members_count }} other people in this group!</p>
+
+                    {% if wrapped %}
+                        <p>You have not yet opened your wrap</p>
+                        <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                    {% else %}
+                        <p>You already know who you are visiting!</p>
+                        <a href="{% url 'unwrapped' %}" class="btn btn-wrap" id="unwrapped">Show Me</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
