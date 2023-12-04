@@ -2,7 +2,7 @@
     margin-top: 8rem;
 }
 
-#id_username, #id_password {
+#id_username, #id_password, #code {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
