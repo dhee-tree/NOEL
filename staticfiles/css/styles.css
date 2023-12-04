@@ -27,13 +27,10 @@ body {
     font-family: 'Mountains of Christmas', serif;
     font-size: 2rem;
     font-weight: bold;
-}
-
-.navbar-brand {
     color: var(--bg-color);
 }
 
-.navbar-brand:hover {
+.navbar-brand:hover, .footer-brand:hover {
     color: var(--text-color);
 }
 

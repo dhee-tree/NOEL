@@ -1,0 +1,29 @@
+.auth-container {
+    margin-top: 8rem;
+}
+
+#id_username, #id_password, #code {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 15px;
+}
+
+#id_username:focus, #id_password:focus {
+    border: 3px solid #555;
+}
+
+.login-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    height: 3rem;
+    border-radius: 15px;
+    font-size: 2rem;
+}
