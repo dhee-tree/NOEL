@@ -1,0 +1,30 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Confirm{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="confirm-form"> 
+                    <form method="post">
+                        {% csrf_token %}
+                        <div id="code-field">
+                            <p>We take Secret Santa very seriously at NOEL.</p>
+                            <p>So, to confirm it is you. <strong><em>Dancer</em></strong> just sent you a code.</p>
+                            <em><strong><span>Enter your code from Dancer:</span></strong></em>
+                            {{ form.code }}
+                        </div>
+                        <button type="submit" class="login-btn">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
