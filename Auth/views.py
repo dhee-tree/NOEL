@@ -7,10 +7,12 @@ from Profile.models import UserProfile
 from .utils import authCodeGenerator, sendEmail
 from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class ConfirmView(View):
     template_name = 'auth/confirm.html'
     form = None
