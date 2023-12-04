@@ -24,6 +24,7 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=11, choices=gender_choices, blank=True)
     profile_pic = models.CharField(max_length=200, blank=True)    
     group_id = models.ForeignKey(SantaGroup, on_delete=models.SET_NULL, null=True)
+    is_wrapped = models.BooleanField(default=True)
     password_changed = models.BooleanField(default=False)
     auth_code = models.CharField(max_length=6, default=authCodeGenerator)
     is_authenticated = models.BooleanField(default=False)

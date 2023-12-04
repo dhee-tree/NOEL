@@ -7,7 +7,7 @@ class SantaGroupAdmin(admin.ModelAdmin):
     list_filter = ('date_created', 'date_updated')
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gender', 'profile_pic', 'group_id', 'password_changed', 'auth_code', 'is_authenticated', 'date_created', 'date_updated')
+    list_display = ('user', 'gender', 'profile_pic', 'group_id', 'is_wrapped', 'password_changed', 'auth_code', 'is_authenticated', 'date_created', 'date_updated')
     list_filter = ('group_id',)
 
 admin.site.register(SantaGroup, SantaGroupAdmin)
