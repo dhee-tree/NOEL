@@ -44,3 +44,18 @@ class GetUserProfile():
             return group_list
         except UserProfile.ObjectDoesNotExist:
             return None
+
+    def set_picked(self, picked):
+        """Sets the picked user to the loggedin user"""
+        try:
+            Pick.objects.create(group_id=self.get_profile().group_id, full_name=picked, picked_by=self.get_profile().full_name)
+            return True
+        except:
+            return False
+
+    def get_picked(self):
+        """Returns the picked user of the loggedin user"""
+        try:
+            return Pick.objects.get(picked_by=self.get_profile().full_name)
+        except ObjectDoesNotExist:
+            return None
