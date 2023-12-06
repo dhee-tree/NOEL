@@ -16,11 +16,19 @@
                         <p>Pick one:</p>
                         <p>{{ members_list }}</p>
                     </div>
-                    {% for i in range %}
-                        <div class="wrapped">
-                            <p name="pick" id="pick" value="{{i}}"><i class="fa-solid fa-gift fa-beat-fade fa-2xl" style="color: #b31312;"></i></p>
+                    <form method="post" action="{% url 'unwrapped' %}">
+                        {% csrf_token %}
+                        <div class="wrapped-container">
+                            {% for i in range %}
+                            <div class="wrapped">
+                                <label for="{{i}}"><i class="fa-solid fa-gift fa-beat-fade fa-2xl" style="color: #b31312;"></i></label>
+                                <input type="radio" name="pick" id="{{i}}" value="{{i}}" required>
+                            </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
+                        
+                        <button type="submit" class="btn btn-pick">Pick</button>
+                    </form>
                 </div>
             </div>
         </div>

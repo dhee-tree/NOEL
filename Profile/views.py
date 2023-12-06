@@ -38,11 +38,13 @@ class WrappedView(View):
         pass
 
 class UnwrappedView(View):
-    template_name = 'profile/unwrapped.html'
+    template_name = 'profile/unwrap.html'
 
     def get(self, request):
         context = {}
         return render(request, self.template_name, context)
         
     def post(self, request):
-        pass
+        picked = request.POST.get('pick')
+        context = {}
+        return render(request, self.template_name, context)
