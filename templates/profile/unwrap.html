@@ -1,0 +1,25 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Unwrapped{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <p>Ho Ho Ho!</p>
+                <p>You have done it!</p>
+
+                <p>Here is your pick: {{ picked }}</p>
+
+                <a href="{% url 'home' %}" class="btn btn-wrap" id="unwrapped">Go Back</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
