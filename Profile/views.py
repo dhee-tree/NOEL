@@ -46,10 +46,14 @@ class UnwrappedView(View):
     template_name = 'profile/unwrap.html'
 
     def get(self, request):
-        context = {}
+        user_profile = GetUserProfile(request.user)
+        context = {'picked': user_profile.get_picked()}
         return render(request, self.template_name, context)
         
     def post(self, request):
-        picked = request.POST.get('pick')
+        user_profile = GetUserProfile(request.user)
+        list_of_members = user_profile.get_group_members_list()
+        user_profile.set_picked(list_of_members[int(request.POST.get('pick')) - 1])
+        user_profile.set_wrapped()
         context = {}
         return render(request, self.template_name, context)
