@@ -152,4 +152,4 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://noel.ighomena.me', 'http://noel.ighomena.me', 'noel.ighomena.me']
+CSRF_TRUSTED_ORIGINS = ['https://noel.ighomena.me', 'http://noel.ighomena.me']
