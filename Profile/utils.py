@@ -28,6 +28,14 @@ class GetUserProfile():
         except UserProfile.ObjectDoesNotExist:
             return None
 
+    def set_wrapped(self):
+        """Sets the wrapped value of the loggedin user to False"""
+        try:
+            UserProfile.objects.filter(user=self.user).update(is_wrapped=False)
+            return True
+        except:
+            return False
+
     def group_members_count(self):
         try:
             return UserProfile.objects.filter(group_id=self.get_profile().group_id).count()
