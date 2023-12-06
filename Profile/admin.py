@@ -7,7 +7,7 @@ class SantaGroupAdmin(admin.ModelAdmin):
     list_filter = ('date_created', 'date_updated')
 
 class PickAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'group_id', 'date_picked')
+    list_display = ('full_name', 'picked_by', 'group_id', 'date_picked')
     list_filter = ('group_id', 'date_picked')
 
 class UserProfileAdmin(admin.ModelAdmin):

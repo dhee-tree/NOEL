@@ -16,9 +16,13 @@ class SantaGroup(models.Model):
 
 class Pick(models.Model):
     pick_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    full_name = models.CharField(max_length=50)
-    group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True)
+    full_name = models.CharField(max_length=50, blank=False)
+    picked_by = models.CharField(max_length=255, unique=True, blank=False)
+    group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
     date_picked = models.DateField(default=date.today)
+
+    class Meta:
+        unique_together = ('full_name', 'group_id')
 
     def __str__(self):
         return self.full_name
