@@ -1,6 +1,7 @@
 from django.views import View
 from .utils import GetUserProfile
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -30,12 +31,16 @@ class WrappedView(View):
 
     def get(self, request):
         user_profile = GetUserProfile(request.user)
-        context = {
-            'user_profile': user_profile.get_profile(),
-            'range': range(1, len(user_profile.get_group_members_list()) + 1),
-            'members_list': user_profile.get_group_members_list(),
-        }
-        return render(request, self.template_name, context)
+        if user_profile.get_wrapped():
+            context = {
+                'user_profile': user_profile.get_profile(),
+                'range': range(1, len(user_profile.get_group_members_list()) + 1),
+                'members_list': user_profile.get_group_members_list(),
+            }
+            return render(request, self.template_name, context)
+        else:
+            return redirect('unwrapped')
+
         
     def post(self, request):
         pass
@@ -56,4 +61,4 @@ class UnwrappedView(View):
         user_profile.set_picked(list_of_members[int(request.POST.get('pick')) - 1])
         user_profile.set_wrapped()
         context = {}
-        return render(request, self.template_name, context)
+        return redirect('unwrapped')
