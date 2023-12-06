@@ -1,0 +1,1 @@
+web gunicorn noelProject.wsgi
