@@ -32,6 +32,22 @@
     flex-wrap: wrap;
 }
 
+.wrapped-text{
+    width: 100%;
+}
+
 .wrapped {
-    margin: 20px;
+    margin: 10px;
+}
+
+.btn-pick {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    height: 4rem;
+    border-radius: 15px;
+    font-size: 2rem;
+    display: block;
+    margin: 20px auto;
 }
