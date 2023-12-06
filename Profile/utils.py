@@ -9,7 +9,7 @@ class GetUserProfile():
         """Returns the user profile of the loggedin user"""
         try:
             return UserProfile.objects.get(user=self.user)
-        except UserProfile.ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return None
 
     def get_santa_greet(self):
@@ -25,7 +25,7 @@ class GetUserProfile():
         """Returns Boolean value if user has opened their wrapped or not"""
         try:
             return UserProfile.objects.get(user=self.user).is_wrapped
-        except UserProfile.ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return None
 
     def set_wrapped(self):
@@ -33,13 +33,13 @@ class GetUserProfile():
         try:
             UserProfile.objects.filter(user=self.user).update(is_wrapped=False)
             return True
-        except:
+        except ObjectDoesNotExist:
             return False
 
     def group_members_count(self):
         try:
             return UserProfile.objects.filter(group_id=self.get_profile().group_id).count()
-        except UserProfile.ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return None
 
     def get_group_members_list(self):
@@ -50,7 +50,7 @@ class GetUserProfile():
                 if Pick.objects.filter(group_id=self.get_profile().group_id, full_name=member).exists():
                     group_list.remove(member)
             return group_list
-        except UserProfile.ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return None
 
     def set_picked(self, picked):
@@ -58,7 +58,7 @@ class GetUserProfile():
         try:
             Pick.objects.create(group_id=self.get_profile().group_id, full_name=picked, picked_by=self.get_profile().full_name)
             return True
-        except:
+        except ObjectDoesNotExist:
             return False
 
     def get_picked(self):
