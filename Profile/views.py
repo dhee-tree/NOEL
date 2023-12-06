@@ -1,8 +1,9 @@
 from django.views import View
+from .utils import GetUserProfile
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from .utils import GetUserProfile
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
@@ -22,6 +23,8 @@ class HomeView(View):
     def post(self, request):
         pass
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class WrappedView(View):
     template_name = 'profile/wrapped.html'
 
@@ -37,6 +40,8 @@ class WrappedView(View):
     def post(self, request):
         pass
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class UnwrappedView(View):
     template_name = 'profile/unwrap.html'
 
