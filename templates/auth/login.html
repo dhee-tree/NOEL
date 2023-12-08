@@ -14,13 +14,22 @@
                     <form method="post">
                         {% csrf_token %}
                         <div id="username-field">
-                            <em><strong><span>Username:</span></strong></em>
+                            <em><strong><span>Email:</span></strong></em>
                             {{ form.username }}
                         </div>
+                        {% if userError %} 
+                            <p class="error-message">Your email is incorrect. Please try again.</p>
+                        {% endif %}
+                        {% if formError %} 
+                            <p class="error-message">Please enter a valid email address.</p>
+                        {% endif %}
                         <div id="password-field">
                             <em><strong><span>Secret Key:</span></strong></em> <!-- {{ form.password.label_tag }} -->
                             {{ form.password }}
                         </div>
+                        {% if passwordError %}
+                            <p class="error-message">Your  password is incorrect. Please try again.</p>
+                        {% endif %}
                         <button type="submit" class="auth-btn">Enter</button>
                         <a href="#">Forgot Password?</a>
                     </form>
