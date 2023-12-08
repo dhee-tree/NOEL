@@ -9,6 +9,11 @@ from django.utils.html import strip_tags
 def authCodeGenerator():
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
 
+
+def groupJoinCode():
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+
+
 def sendEmail(request, user, code):
     subject = 'Pssst! Your secret code is...'
     html_message = render_to_string('auth/2fa_email.html', {'user': user, 'code': code})
