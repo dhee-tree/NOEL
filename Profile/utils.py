@@ -38,7 +38,10 @@ class GetUserProfile():
 
     def group_members_count(self):
         try:
-            return UserProfile.objects.filter(group_id=self.get_profile().group_id).count()
+            if self.get_profile().group_id is None:
+                return None
+            else:
+                return UserProfile.objects.filter(group_id=self.get_profile().group_id).count()
         except ObjectDoesNotExist:
             return None
 
