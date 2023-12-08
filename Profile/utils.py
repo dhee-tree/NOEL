@@ -70,3 +70,10 @@ class GetUserProfile():
             return Pick.objects.get(picked_by=self.get_profile().full_name)
         except ObjectDoesNotExist:
             return None
+
+    def check_pick(self):
+        """Checks if the loggedin user has been picked by another user"""
+        try:
+            return Pick.objects.filter(group_id=self.get_profile().group_id, full_name=self.get_profile().full_name).exists()
+        except ObjectDoesNotExist:
+            return False

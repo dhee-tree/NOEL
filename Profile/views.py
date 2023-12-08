@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class HomeView(View):
     template_name = 'profile/home.html'
 
@@ -32,6 +33,8 @@ class WrappedView(View):
     def get(self, request):
         user_profile = GetUserProfile(request.user)
         if user_profile.get_wrapped():
+            if not user_profile.check_pick():
+                return redirect('unwrapped')
             context = {
                 'user_profile': user_profile.get_profile(),
                 'range': range(1, len(user_profile.get_group_members_list()) + 1),
