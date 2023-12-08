@@ -12,18 +12,62 @@
             <div class="col-12">
                 <div class="confirm-form"> 
                     <p>Ho Ho Ho {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}.</p>
-                    <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
-                    <p>There are {{ group_members_count }} other people in this group!</p>
+                    {% if group_members_count == None %}
+                        <p>You are not a member of any group yet!</p>
+                        <div class="btn-group-container">
+                            <a href="#" class="btn btn-group-create">Create Group</a>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Join Group
+                            </button>
 
-                    {% if wrapped %}
-                        <p>You have not yet opened your wrap</p>
-                        <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Joining new Santa Group</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="" method="post" id="code_form">
+                                                {% csrf_token %}
+                                                <label for="group_code">Enter Group Code:</label>
+                                                <input type="text" name="" id="group_code" maxlength="6" required>
+                                        </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Find Group</button>
+                                                    <!-- <div id="loading">
+                                                        <i class="fa-solid fa-hourglass-start fa-fade fa-xl"></i>
+                                                    </div> -->
+                                                </div>
+                                            </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <p>You already know who you are visiting!</p>
-                        <a href="{% url 'unwrapped' %}" class="btn btn-wrap" id="unwrapped">Show Me</a>
+                        <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
+                        <p>There are {{ group_members_count }} other people in this group!</p>
+                        <a href="#" class="">My Groups</a>
+
+                        {% if wrapped %}
+                            <p>You have not yet opened your wrap</p>
+                            <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                        {% else %}
+                            <p>You already know who you are visiting!</p>
+                            <a href="{% url 'unwrapped' %}" class="btn btn-wrap" id="unwrapped">Show Me</a>
+                        {% endif %}
                     {% endif %}
+
+                    
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
