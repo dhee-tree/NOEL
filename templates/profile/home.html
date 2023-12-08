@@ -38,9 +38,6 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Find Group</button>
-                                                    <!-- <div id="loading">
-                                                        <i class="fa-solid fa-hourglass-start fa-fade fa-xl"></i>
-                                                    </div> -->
                                                 </div>
                                             </form>
                                     </div>
@@ -50,14 +47,19 @@
                     {% else %}
                         <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
                         <p>There are {{ group_members_count }} other people in this group!</p>
-                        <a href="#" class="">My Groups</a>
-
+                        
                         {% if wrapped %}
                             <p>You have not yet opened your wrap</p>
-                            <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                            <div class="btn-group-container">
+                                <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                                <a href="#" class="btn btn-view-group">My Groups</a>
+                            </div>
                         {% else %}
                             <p>You already know who you are visiting!</p>
-                            <a href="{% url 'unwrapped' %}" class="btn btn-wrap" id="unwrapped">Show Me</a>
+                            <div class="btn-group-container">
+                                <a href="{% url 'unwrapped' %}" class="btn" id="unwrapped">Show Me</a>
+                                <a href="#" class="btn btn-view-group">My Groups</a>
+                            </div>
                         {% endif %}
                     {% endif %}
 
