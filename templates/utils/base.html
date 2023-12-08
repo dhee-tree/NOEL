@@ -28,29 +28,34 @@
 	<body>
 		<header class="container bg-noel">
 			<nav class="navbar" aria-label="Noel Navbar">
-					<a class="navbar-brand" href="/">NOEL</a>
-					<button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-
-					<div class="navbar-collapse collapse" id="navbarsExample01">
-						<ul class="navbar-nav me-auto mb-2">
-						<li class="nav-item">
-							<a class="nav-link" href="#">About</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">FAQs</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Reach Us</a>
-						</li>
-						{% if user.is_authenticated %}
-							<li class="nav-item">
-								<a class="nav-link" href="{% url 'logout' %}">Logout</a>
-							</li>
-						{% endif %}
-				</div>
+				<a class="navbar-brand" href="/">NOEL</a>
+				<button class="navbar-toggler collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 			</nav>
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+				<div class="offcanvas-header">
+					<h6 class="offcanvas-title" id="offcanvasRightLabel">NOEL</h6>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div id="eco-line"></div>
+				<div class="offcanvas-body">
+					<a class="side-item" href="/"><i class="fa-solid fa-house-user"></i> Home</a>
+					{% if user.is_authenticated %}
+						<a class="side-item" href="#"><i class="fa-solid fa-users"></i> My Groups</a>
+							<hr>
+						<a class="side-item"  href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+					{% else %}
+						<a class="side-item" href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+						<a class="side-item" href="#"><i class="fa-solid fa-user-plus"></i> Register</a>
+						<hr>
+						<a class="side-item" href="#"><i class="fa-solid fa-book"></i> About Us</a>
+						<a class="side-item" href="#"><i class="fa-solid fa-question"></i> FAQs</a>
+						<a class="side-item" href="#"><i class="fa-solid fa-envelope"></i> Reach Us</a>
+					{% endif %}
+				</div>
+			</div>
+
 		</header>
 
 		<main>
@@ -58,14 +63,6 @@
 				<!--This is where the main content of a page is displayed-->
 			{% endblock %}
 		</main>
-
-		<!-- <footer>
-			<div class="row">
-				<div class="col-12">
-					<p class="text-center">NOEL &copy; 2023</p>
-				</div>
-			</div>
-		</footer> -->
 		<div class="container bg-secondary">
 			<footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5">
 				<div class="col mb-3">

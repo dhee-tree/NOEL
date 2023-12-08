@@ -43,6 +43,47 @@ body {
     text-decoration: underline;
 }
 
+/* SIDEBAR */
+.offcanvas-body {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.offcanvas-header {
+    background-color: var(--secondary-color);
+    color: #fff;
+    font-family: 'Mountains of Christmas', serif;
+    height: 4.6rem;
+}
+
+.offcanvas-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.btn-close {
+    background-color: #fff;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+}
+
+.offcanvas-end {
+    width: 15rem !important;
+}
+
+.side-item {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    padding: 0.5rem 0.5rem;
+    font-weight: bold;
+}
+
+.side-item:hover {
+    background-color: var(--style-color);
+    color: var(--fifth-color);
+}
+
 /* MAIN */
 main {
     min-height: 100vh;
