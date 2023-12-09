@@ -1,37 +1,11 @@
 import uuid
 from datetime import date
 from django.db import models
+from Group.models import SantaGroup
 from django.contrib.auth.models import User
-from Auth.utils import authCodeGenerator, groupJoinCode
+from Auth.utils import authCodeGenerator
 
 # Create your models here.
-class SantaGroup(models.Model):
-    group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    group_name = models.CharField(max_length=50, unique=True)
-    group_code = models.CharField(max_length=6, unique=True, blank=True)
-    date_created = models.DateField(default=date.today)
-    date_updated = models.DateField(default=date.today)
-
-    def __str__(self):
-        return self.group_name
-
-    def save(self, *args, **kwargs):
-        self.group_code = groupJoinCode()
-        super(SantaGroup, self).save(*args, **kwargs)
-
-class Pick(models.Model):
-    pick_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    full_name = models.CharField(max_length=50, blank=False)
-    picked_by = models.CharField(max_length=255, unique=True, blank=False)
-    group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
-    date_picked = models.DateField(default=date.today)
-
-    class Meta:
-        unique_together = ('full_name', 'group_id')
-
-    def __str__(self):
-        return self.full_name
-
 class UserProfile(models.Model):
     gender_choices = (
         ('Male', 'Male'),
