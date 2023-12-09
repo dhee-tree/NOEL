@@ -1,4 +1,4 @@
-from .models import UserProfile, SantaGroup
+from .models import UserProfile
 from Group.models import Pick
 from django.core.exceptions import ObjectDoesNotExist
 
