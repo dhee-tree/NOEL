@@ -72,8 +72,8 @@ class GetUserProfile():
             return None
 
     def check_pick(self):
-        """Checks if the loggedin user has been picked by another user"""
+        """Checks if the logged in user has been picked a participant"""
         try:
-            return Pick.objects.filter(group_id=self.get_profile().group_id, full_name=self.get_profile().full_name).exists()
+            return Pick.objects.filter(group_id=self.get_profile().group_id, picked_by=self.get_profile().full_name).exists()
         except ObjectDoesNotExist:
             return False

@@ -33,7 +33,7 @@ class WrappedView(View):
     def get(self, request):
         user_profile = GetUserProfile(request.user)
         if user_profile.get_wrapped():
-            if not user_profile.check_pick():
+            if user_profile.check_pick():
                 return redirect('unwrapped')
             context = {
                 'user_profile': user_profile.get_profile(),
