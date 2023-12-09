@@ -28,7 +28,7 @@
 	<body>
 		<header class="container bg-noel">
 			<nav class="navbar" aria-label="Noel Navbar">
-				<a class="navbar-brand" href="/">NOEL</a>
+				<a class="navbar-brand" href="{% url 'index' %}">NOEL</a>
 				<button class="navbar-toggler collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -42,7 +42,7 @@
 				<div class="offcanvas-body">
 					<a class="side-item" href="/"><i class="fa-solid fa-house-user"></i> Home</a>
 					{% if user.is_authenticated %}
-						<a class="side-item" href="#"><i class="fa-solid fa-users"></i> My Groups</a>
+						<a class="side-item" href="{% url 'group_home' %}"><i class="fa-solid fa-users"></i> My Groups</a>
 							<hr>
 						<a class="side-item"  href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
 					{% else %}
@@ -66,7 +66,7 @@
 		<div class="container bg-secondary">
 			<footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5">
 				<div class="col mb-3">
-					<a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none footer-brand">NOEL</a>
+					<a href="{% url 'index' %}" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none footer-brand">NOEL</a>
 					<p class="text-body-secondary">© 2023</p>
 				</div>
 
@@ -75,7 +75,7 @@
 				<div class="col mb-3">
 					<h5>Sitemap</h5>
 					<ul class="nav flex-column">
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'index' %}" class="nav-link p-0 text-body-secondary">Home</a></li>
 						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
 						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
 						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Reach Us</a></li>
