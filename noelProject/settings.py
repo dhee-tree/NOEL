@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'noelMain',
     'Auth',
     'Profile',
+    'Group',
 ]
 
 MIDDLEWARE = [

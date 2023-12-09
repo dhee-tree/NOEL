@@ -21,5 +21,6 @@ urlpatterns = [
     path('', include('noelMain.urls')),
     path('auth/', include('Auth.urls')),
     path('user/', include('Profile.urls')),
+    path('group/', include('Group.urls')),
     path('admin/', admin.site.urls),
 ]
