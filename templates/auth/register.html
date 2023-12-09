@@ -1,0 +1,48 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Register{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="login-form"> 
+                    <h1 class="text-center">Register</h1>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {% if registerError %}
+                            <span class="error-message">This email address is already registered.</span>
+                            <a href="{% url 'login' %}">Login instead</a> <br>
+                        {% endif %}
+                        
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+
+                        {{ form.confirm_password.label_tag }}
+                        {{ form.confirm_password }}
+
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        
+                        {{ form.gender.label_tag }}
+                        {{ form.gender }}
+                        <p>By clicking Register you accept our <a href="#">Terms and conditions</a></p>
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
