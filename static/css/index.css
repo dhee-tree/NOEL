@@ -10,9 +10,7 @@ h1 {
     margin-bottom: 12rem;
 }
 
-.login-btn {
-    background-color: var(--secondary-color);
-    color: var(--bg-color);
+.login-btn, .register-btn {
     border: none;
     border-radius: 15px;
     font-size: 1.5rem;
@@ -22,8 +20,24 @@ h1 {
     height: 3rem;
 }
 
+.login-btn {
+    background-color: var(--secondary-color);
+    color: var(--bg-color);
+}
+
+.register-btn {
+    background-color: var(--text-color);
+    color: #000;
+}
+
 .login-btn:hover {
     background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: #fff;
+}
+
+.register-btn:hover {
+    background-color: var(--text-color);
     opacity: 0.8;
     color: #fff;
 }
