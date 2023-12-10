@@ -1,0 +1,56 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Create Group{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/group.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <p>Here are the groups you are a member of</p>
+                <ul>
+                    {% for group in object_list %}
+                    <li>{{ group.group_id }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="btn-group-container">
+                    <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Join Group
+                    </button>
+
+                        <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Joining new Santa Group</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="" method="post" id="code_form">
+                                        {% csrf_token %}
+                                        <label for="group_code">Enter Group Code:</label>
+                                        <input type="text" name="" id="group_code" maxlength="6" required>
+                                </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Find Group</button>
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
