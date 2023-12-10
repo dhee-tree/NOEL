@@ -3,8 +3,8 @@ from .models import SantaGroup, Pick, GroupMember
 
 # Register your models here.
 class SantaGroupAdmin(admin.ModelAdmin):
-    list_display = ('group_name', 'group_code', 'date_created', 'date_updated')
-    list_filter = ('date_created', 'date_updated')
+    list_display = ('group_name', 'group_code', 'is_open', 'created_by', 'date_created', 'date_updated')
+    list_filter = ('is_open', 'created_by', 'date_created', 'date_updated')
 
 
 class PickAdmin(admin.ModelAdmin):
