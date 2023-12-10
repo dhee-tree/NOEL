@@ -15,7 +15,7 @@
                     {% if group_members_count == None %}
                         <p>You are not a member of any group yet!</p>
                         <div class="btn-group-container">
-                            <a href="#" class="btn btn-group-create">Create Group</a>
+                            <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Join Group
@@ -52,13 +52,13 @@
                             <p>You have not yet opened your wrap</p>
                             <div class="btn-group-container">
                                 <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
-                                <a href="#" class="btn btn-view-group">My Groups</a>
+                                <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
                             </div>
                         {% else %}
                             <p>You already know who you are visiting!</p>
                             <div class="btn-group-container">
                                 <a href="{% url 'unwrapped' %}" class="btn" id="unwrapped">Show Me</a>
-                                <a href="#" class="btn btn-view-group">My Groups</a>
+                                <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
                             </div>
                         {% endif %}
                     {% endif %}
