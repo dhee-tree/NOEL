@@ -12,8 +12,22 @@
             <div class="col-12">
                 <div class="confirm-form"> 
                     <p>Ho Ho Ho {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}.</p>
-                    {% if group_members_count == None %}
-                        <p>You are not a member of any group yet!</p>
+                    
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                    <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
+                                {% else %}
+                                    <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if user_group_count == 0 %}
+                    <p>You are not a member of any group yet!</p>
                         <div class="btn-group-container">
                             <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
                             <!-- Button trigger modal -->
@@ -30,10 +44,10 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="" method="post" id="code_form">
+                                            <form method="post" id="code_form">
                                                 {% csrf_token %}
                                                 <label for="group_code">Enter Group Code:</label>
-                                                <input type="text" name="" id="group_code" maxlength="6" required>
+                                                <input type="text" name="group_code" id="group_code" maxlength="6" required>
                                         </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -45,24 +59,10 @@
                             </div>
                         </div>
                     {% else %}
-                        <p>You are part of the: <strong><u>{{ user_profile.group_id.group_name }}</u></strong> Group</p>
+                        <p>You are part of; <strong><u>{{ user_group_count }}</u></strong> {% if user_group_count > 1 %} groups {% else %} group {% endif %}</p>
+                        <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
                         <p>There are {{ group_members_count }} other people in this group!</p>
-                        
-                        {% if wrapped %}
-                            <p>You have not yet opened your wrap</p>
-                            <div class="btn-group-container">
-                                <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
-                                <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
-                            </div>
-                        {% else %}
-                            <p>You already know who you are visiting!</p>
-                            <div class="btn-group-container">
-                                <a href="{% url 'unwrapped' %}" class="btn" id="unwrapped">Show Me</a>
-                                <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
-                            </div>
-                        {% endif %}
                     {% endif %}
-
                     
                 </div>
             </div>
