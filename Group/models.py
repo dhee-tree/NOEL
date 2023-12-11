@@ -7,7 +7,7 @@ from Auth.utils import groupJoinCode
 class SantaGroup(models.Model):
     group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     group_name = models.CharField(max_length=50, unique=True)
-    group_code = models.CharField(max_length=6, unique=True, blank=True)
+    group_code = models.CharField(max_length=6, unique=True, default=groupJoinCode())
     is_open = models.BooleanField(default=True)
     created_by = models.ForeignKey('Profile.UserProfile', on_delete=models.SET_NULL, null=True)
     date_created = models.DateField(default=date.today)
@@ -15,10 +15,6 @@ class SantaGroup(models.Model):
 
     def __str__(self):
         return self.group_name
-
-    def save(self, *args, **kwargs):
-        self.group_code = groupJoinCode()
-        super(SantaGroup, self).save(*args, **kwargs)
 
 
 class Pick(models.Model):
