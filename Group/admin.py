@@ -13,8 +13,8 @@ class PickAdmin(admin.ModelAdmin):
 
 
 class GroupMemberAdmin(admin.ModelAdmin):
-    list_display = ('group_id', 'user_profile_id', 'date_created', 'date_updated')
-    list_filter = ('date_created', 'date_updated')
+    list_display = ('group_id', 'user_profile_id', 'is_wrapped', 'date_created', 'date_updated')
+    list_filter = ('date_created', 'is_wrapped')
 
 
 admin.site.register(SantaGroup, SantaGroupAdmin)

@@ -18,12 +18,10 @@ class SantaGroup(models.Model):
 
 
 class Pick(models.Model):
-    pick_id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
+    pick_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=50, blank=False)
     picked_by = models.CharField(max_length=255, unique=True, blank=False)
-    group_id = models.ForeignKey(
-        SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
+    group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
     date_picked = models.DateField(default=date.today)
 
     class Meta:
@@ -36,6 +34,7 @@ class Pick(models.Model):
 class GroupMember(models.Model):
     group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE)
     user_profile_id = models.ForeignKey('Profile.UserProfile', on_delete=models.CASCADE)
+    is_wrapped = models.BooleanField(default=True)
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
 
