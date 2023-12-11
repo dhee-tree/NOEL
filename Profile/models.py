@@ -15,7 +15,6 @@ class UserProfile(models.Model):
     full_name = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=11, choices=gender_choices, blank=True)
     profile_pic = models.CharField(max_length=200, blank=True)    
-    is_wrapped = models.BooleanField(default=True)
     password_changed = models.BooleanField(default=False)
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
