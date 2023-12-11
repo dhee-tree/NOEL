@@ -1,0 +1,88 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - {{group}} group{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/group.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ group }} group</h1>
+                <span>Invite code: {{ group.group_code }}</span> <i class="fa-regular fa-copy"></i> <a href="#">Intive friends</a>
+                <p></p>
+                
+                <p>Hi, {{ user_profile}} </p>
+                {% if members.count == 0 %}
+                    <p>There are no members in this group yet!</p>
+                {% else %}
+                    <p>There are {{ members.count }} participants in this group!</p>
+                    <p>Here are the groups members:</p>
+                    {% for member in members %}
+                        {% if member.user_profile_id == user_profile %}
+                            <p>{{ member.user_profile_id }} (You)</p>
+                        {% else %}
+                            <p>{{ member.user_profile_id }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if wrapped %}
+                    <p>You have not yet opened your wrap</p>
+                    <div class="btn-group-container">
+                        <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                        <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
+                    </div>
+                {% else %}
+                    <p>You already know who you are visiting!</p>
+                    <div class="btn-group-container">
+                        <a href="{% url 'unwrapped' %}" class="btn" id="unwrapped">Show Me</a>
+                        <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
+                    </div>
+                {% endif %}
+
+                <!-- Button trigger modal -->
+                {% if group_owner %}
+                    <hr>
+                    <p class="text-info group-settings">Use the settings to close the group from new participants.</p>
+                    <i class="fa-solid fa-gear btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                {% endif %}
+
+                    <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Changing {{ group }} settings</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" id="code_form">
+                                    {% csrf_token %}
+                                    {% if is_open %}
+                                        <p>Group is open</p>
+                                        <input type="checkbox" name="group_check_box" id="group_check_box" checked="checked">
+                                        <label for="group_check_box">Open group</label>
+                                    {% else %}
+                                        <p for="open">Group is closed</p>
+                                        <input type="checkbox" name="open" id="open">
+                                        <label for="open">Open group</label>
+                                    {% endif %}
+                            </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Save Changes</button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
