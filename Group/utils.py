@@ -1,0 +1,107 @@
+from django.db import IntegrityError
+from Profile.models import UserProfile
+from .models import SantaGroup, GroupMember, Pick
+from django.core.exceptions import ObjectDoesNotExist
+
+class GroupManager():
+    """Class to manage groups"""
+    def __init__(self, user):
+        self.user = user
+
+    def create_group(self, group_id):
+        """Sets the group any user"""
+        try:
+            GroupMember.objects.create(group_id=group_id, user_profile_id=self.user.userprofile)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    def user_group(self):
+        """Returns the group of any user"""
+        try:
+            return GroupMember.objects.filter(user_profile_id=self.user.userprofile)
+        except ObjectDoesNotExist:
+            return None
+
+    def check_group_code(self, group_code):
+        """Checks if the group code is valid"""
+        try:
+            return SantaGroup.objects.filter(group_code=group_code).exists()
+        except ObjectDoesNotExist:
+            return False
+
+    def join_group(self, group_code):
+        """Adds the loggedin user to a group"""
+        try:
+            group = SantaGroup.objects.get(group_code=group_code)
+            GroupMember.objects.create(group_id=group, user_profile_id=self.user.userprofile)
+            return True
+        except ObjectDoesNotExist:
+            return False
+        except IntegrityError:
+            return False
+
+    def check_group_creator(self, group):
+        """Checks if the loggedin user is the creator of the group"""
+        try:
+            SantaGroup.objects.filter(group_name=group).values('created_by').get(created_by=self.user.userprofile)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    def get_is_open(self, group):
+        """Returns the open status of the group"""
+        try:
+            return SantaGroup.objects.filter(group_name=group).values('is_open') == True
+            
+        except ObjectDoesNotExist:
+            return None
+
+    def set_is_open(self, group, is_open):
+        """Sets the open status of the group"""
+        try:
+            group = SantaGroup.objects.filter(group_name=group).update(is_open=is_open)
+            return True
+        except ObjectDoesNotExist:
+            return False
+    
+
+    # Copied
+    def get_group_members_list(self):
+        """Returns a list of all group members without the loggedin user and users who have not been picked"""
+        try:
+            group_list = list(UserProfile.objects.filter(group_id=self.get_profile().group_id).exclude(user=self.user).values_list('full_name', flat=True))
+            for member in group_list:
+                if Pick.objects.filter(group_id=self.get_profile().group_id, full_name=member).exists():
+                    group_list.remove(member)
+            return group_list
+        except ObjectDoesNotExist:
+            return None
+
+    def set_picked(self, picked):
+        """Sets the picked user to the loggedin user"""
+        try:
+            Pick.objects.create(group_id=self.get_profile().group_id, full_name=picked, picked_by=self.get_profile().full_name)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    def get_picked(self):
+        """Returns the picked user of the loggedin user"""
+        try:
+            return Pick.objects.get(picked_by=self.get_profile().full_name)
+        except ObjectDoesNotExist:
+            return None
+
+    def check_pick(self):
+        """Checks if the logged in user has been picked a participant"""
+        try:
+            # get the all the group id of the logged in user
+            # self.group_id
+            # return True if the logged in user has been picked
+            # query the Pick model for entry with group_id matches any group_id in the group member model and picked_by matches the full name of logged in user
+            # return True if the query returns a result
+            # else return False
+            return Pick.objects.filter(picked_by=self.user.userprofile.full_name).exists()
+        except ObjectDoesNotExist:
+            return False
