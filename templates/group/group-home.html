@@ -13,11 +13,25 @@
             <div class="col-12">
                 <p>Here are the groups you are a member of</p>
                 <ul>
-                    {% for group in object_list %}
-                    <li>{{ group.group_id }}</li>
+                    {% for group in groups %}
+                    <li>
+                        <a href="{% url 'group_view' group_name=group.group_id %}">{{ group.group_id }}</a>
+                    </li>
                     {% endfor %}
                 </ul>
 
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
+                            {% else %}
+                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
+                            {% endif %}
+                            
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 <div class="btn-group-container">
                     <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
                     <!-- Button trigger modal -->
@@ -34,10 +48,10 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="" method="post" id="code_form">
+                                    <form method="post" id="code_form">
                                         {% csrf_token %}
                                         <label for="group_code">Enter Group Code:</label>
-                                        <input type="text" name="" id="group_code" maxlength="6" required>
+                                        <input type="text" name="group_code" id="group_code" maxlength="6" required>
                                 </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
