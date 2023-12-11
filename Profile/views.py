@@ -1,44 +1,61 @@
 from django.views import View
 from .utils import GetUserProfile
+from Group.utils import GroupManager
 from django.shortcuts import render
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
-@method_decorator(login_required, name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
-class HomeView(View):
+class HomeView(LoginRequiredMixin, View):
     template_name = 'profile/home.html'
 
     def get(self, request):
         user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
         context = {
             'user_profile': user_profile.get_profile(), 
-            'group_members_count': user_profile.group_members_count(),
             'santa_greet': user_profile.get_santa_greet(),
+            'user_group_count': group_profile.user_group().count(),
             'wrapped': user_profile.get_wrapped(),
             }
         return render(request, self.template_name, context)
         
     def post(self, request):
-        pass
+        group_code = request.POST.get('group_code')
+        group_profile = GroupManager(request.user)
+        if group_profile.check_group_code(group_code):
+            if group_profile.join_group(group_code):
+                messages.success(
+                    request, 'You have successfully joined the group.')
+                return redirect('home')
+            else:
+                messages.error(
+                    request, 'You are already a member of this group.')
+                return redirect('home')
+        else:
+            messages.error(request, 'Invalid group code.')
+            return redirect('home')
 
-@method_decorator(login_required, name='dispatch')
+
 @method_decorator(csrf_protect, name='dispatch')
-class WrappedView(View):
+class WrappedView(LoginRequiredMixin, View):
     template_name = 'profile/wrapped.html'
 
     def get(self, request):
         user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
         if user_profile.get_wrapped():
-            if user_profile.check_pick():
+            if group_profile.check_pick():
                 return redirect('unwrapped')
             context = {
                 'user_profile': user_profile.get_profile(),
-                'range': range(1, len(user_profile.get_group_members_list()) + 1),
-                'members_list': user_profile.get_group_members_list(),
+                'range': range(1, len(group_profile.get_group_members_list()) + 1),
+                'members_list': group_profile.get_group_members_list(),
             }
             return render(request, self.template_name, context)
         else:
@@ -48,9 +65,8 @@ class WrappedView(View):
     def post(self, request):
         pass
 
-@method_decorator(login_required, name='dispatch')
 @method_decorator(csrf_protect, name='dispatch')
-class UnwrappedView(View):
+class UnwrappedView(LoginRequiredMixin, View):
     template_name = 'profile/unwrap.html'
 
     def get(self, request):
