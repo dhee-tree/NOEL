@@ -1,3 +1,8 @@
 .group-settings {
     font-size: .6em;
 }
+
+.highlight {
+    background-color: #e3e3d8;
+    border: 2px solid #000;
+}
