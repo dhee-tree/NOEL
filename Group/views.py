@@ -48,6 +48,8 @@ class CreateGroupView(LoginRequiredMixin, CreateView):
         group_manager = GroupManager(self.request.user)
         group.save()
         group_manager.create_group(group.instance)
+        group.instance.created_by = user_profile.get_profile()
+        group.instance.save()
 
         return super().form_valid(group)
 
