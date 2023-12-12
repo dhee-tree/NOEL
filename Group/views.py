@@ -71,6 +71,7 @@ class ViewGroupView(LoginRequiredMixin, View):
             'user_profile': user_profile.get_profile(),
             'group_owner': group_profile.check_group_creator(group),
             'is_open': group_profile.get_is_open(group),
+            'wrapped': group_profile.get_wrapped(group),
         }
 
         return render(request, self.template_name, context)
@@ -87,3 +88,79 @@ class ViewGroupView(LoginRequiredMixin, View):
             group_manager.set_is_open(group, False)
             messages.success(request, 'Group is now closed.')
             return redirect('group_view', group_name=group_name)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class WrappedView(LoginRequiredMixin, View):
+    template_name = 'group/wrapped.html'
+
+    def get(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        if group_profile.get_wrapped(group):
+            if group_profile.check_pick(group):
+                messages.error(request, f'You already picked a user for {group}.')
+                return redirect('group_home')
+            context = {
+                'user_profile': user_profile.get_profile(),
+                'range': range(1, GroupMember.objects.filter(group_id=group).count()),
+                'group': group,
+                'members_list': group_profile.get_group_members_list(group),
+            }
+            return render(request, self.template_name, context)
+        else:
+            messages.error(request, f'You have already opened your for {group}.')
+            return redirect('group_home')
+
+    def post(self, request):
+        pass
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class UnwrappedView(LoginRequiredMixin, View):
+    template_name = 'group/unwrap.html'
+
+    def get(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+        
+        context = {
+            'picked': group_profile.get_picked(group),
+            'group': group,
+            'user_profile': user_profile.get_profile(),
+            }
+        return render(request, self.template_name, context)
+
+    def post(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        list_of_members = group_profile.get_group_members_list(group)
+        picked = request.POST.get('pick')
+        participant_picked = list_of_members[int(picked) - 1]
+        group_profile.set_picked(group, participant_picked)
+        group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
+        group_member.is_wrapped = False
+        group_member.save()
+        context = {}
+        messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
+        return redirect('group_home')
