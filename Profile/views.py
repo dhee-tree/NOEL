@@ -21,7 +21,6 @@ class HomeView(LoginRequiredMixin, View):
             'user_profile': user_profile.get_profile(), 
             'santa_greet': user_profile.get_santa_greet(),
             'user_group_count': group_profile.user_group().count(),
-            'wrapped': user_profile.get_wrapped(),
             }
         return render(request, self.template_name, context)
         
