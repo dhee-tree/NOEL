@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
@@ -15,14 +14,18 @@ class HomeView(LoginRequiredMixin, View):
     template_name = 'profile/home.html'
 
     def get(self, request):
-        user_profile = GetUserProfile(request.user)
-        group_profile = GroupManager(request.user)
-        context = {
-            'user_profile': user_profile.get_profile(), 
-            'santa_greet': user_profile.get_santa_greet(),
-            'user_group_count': group_profile.user_group().count(),
+        if request.user.is_staff:
+            messages.error(request, 'You are not allowed profile home. Admins do not have a profile.')
+            return redirect('admin:index')
+        else:
+            user_profile = GetUserProfile(request.user)
+            group_profile = GroupManager(request.user)
+            context = {
+                'user_profile': user_profile.get_profile(), 
+                'santa_greet': user_profile.get_santa_greet(),
+                'user_group_count': group_profile.user_group().count(),
             }
-        return render(request, self.template_name, context)
+            return render(request, self.template_name, context)
         
     def post(self, request):
         group_code = request.POST.get('group_code')
