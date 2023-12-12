@@ -49,6 +49,14 @@ class GroupManager():
         except ObjectDoesNotExist:
             return False
 
+    def check_group_member(self, group):
+        """Checks if the loggedin user is a member of the group"""
+        try:
+            GroupMember.objects.get(group_id=group, user_profile_id=self.user.userprofile)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
     def get_group_members_list(self, group):
         """Returns a list of all group members without the loggedin user and users who have not been picked"""
         try:

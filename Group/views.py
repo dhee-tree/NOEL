@@ -65,19 +65,23 @@ class ViewGroupView(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.error(request, 'Group does not exist.')
             return redirect('group_home')
+
+        if group_profile.check_group_member(group):
+            members = GroupMember.objects.filter(group_id=group)
+            context = {
+                'group': group,
+                'members': members,
+                'user_profile': user_profile.get_profile(),
+                'group_owner': group_profile.check_group_creator(group),
+                'is_open': group_profile.get_is_open(group),
+                'wrapped': group_profile.get_wrapped(group),
+            }
+
+            return render(request, self.template_name, context)
+        else:
+            messages.error(request, f'You are not a member of {group_name}.')
+            return redirect('group_home')
             
-        members = GroupMember.objects.filter(group_id=group)
-        context = {
-            'group': group,
-            'members': members,
-            'user_profile': user_profile.get_profile(),
-            'group_owner': group_profile.check_group_creator(group),
-            'is_open': group_profile.get_is_open(group),
-            'wrapped': group_profile.get_wrapped(group),
-        }
-
-        return render(request, self.template_name, context)
-
     def post(self, request, group_name):
         group_check_box = request.POST.get('group_check_box')
         group = SantaGroup.objects.get(group_name=group_name)
@@ -171,11 +175,13 @@ class UnwrappedView(LoginRequiredMixin, View):
         if picked == None:
             messages.error(request, 'You did not pick a user.')
             return redirect('group_view', group_name=group_name)
-        participant_picked = list_of_members[int(picked) - 1]
-        group_profile.set_picked(group, participant_picked)
-        group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
-        group_member.is_wrapped = False
-        group_member.save()
-        context = {}
-        messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
-        return redirect('group_view', group_name=group_name)
+        else:
+            participant_picked = list_of_members[int(picked) - 1]
+            group_profile.set_picked(group, participant_picked)
+            group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
+            group_member.is_wrapped = False
+            group_member.save()
+
+            messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
+            return redirect('group_view', group_name=group_name)
+        
