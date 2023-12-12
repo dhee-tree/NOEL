@@ -176,12 +176,22 @@ class UnwrappedView(LoginRequiredMixin, View):
             messages.error(request, 'You did not pick a user.')
             return redirect('group_view', group_name=group_name)
         else:
-            participant_picked = list_of_members[int(picked) - 1]
-            group_profile.set_picked(group, participant_picked)
-            group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
-            group_member.is_wrapped = False
-            group_member.save()
+            if group_profile.get_is_open(group):
+                if group_profile.check_pick(group):
+                    messages.error(request, 'You already picked a user.')
+                    group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
+                    group_member.is_wrapped = False
+                    group_member.save()
+                    return redirect('group_view', group_name=group_name)
+                else:
+                    participant_picked = list_of_members[int(picked) - 1]
+                    group_profile.set_picked(group, participant_picked)
+                    group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
+                    group_member.is_wrapped = False
+                    group_member.save()
 
-            messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
-            return redirect('group_view', group_name=group_name)
-        
+                    messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
+                    return redirect('group_view', group_name=group_name)
+            else:
+                messages.error(request, f'You cannot pick a user for {group}, it is closed.')
+                return redirect('group_view', group_name=group_name)
