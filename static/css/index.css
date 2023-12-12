@@ -45,3 +45,30 @@ h1 {
     opacity: 0.8;
     color: #fff;
 }
+
+/* Default size for large screens */
+.svg {
+    height: 250px;
+}
+
+.carousel-item {
+    height: 500px;
+}
+
+/* Sizes for smaller screens */
+@media (max-width: 768px) {
+    .carousel-item {
+        height: 400px;
+    }
+}
+
+/* Sizes for mobile devices */
+@media (max-width: 576px) {
+    .carousel-item {
+        height: 200px;
+    }
+
+    .svg {
+        height: 150px;
+    }
+}
