@@ -44,14 +44,27 @@
                     </div>
                 {% endif %}
 
-                <!-- Button trigger modal -->
+                {% if messages %}
+                    <ul class="messages mt-2">
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
+                            {% else %}
+                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
+                            {% endif %}
+                            
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <!-- Group settings modal trigger -->
                 {% if group_owner %}
                     <hr>
                     <p class="text-info group-settings">Use the settings to close the group from new participants.</p>
                     <i class="fa-solid fa-gear btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                 {% endif %}
 
-                    <!-- Modal -->
+                <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">

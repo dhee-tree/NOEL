@@ -156,6 +156,9 @@ class UnwrappedView(LoginRequiredMixin, View):
 
         list_of_members = group_profile.get_group_members_list(group)
         picked = request.POST.get('pick')
+        if picked == None:
+            messages.error(request, 'You did not pick a user.')
+            return redirect('group_view', group_name=group_name)
         participant_picked = list_of_members[int(picked) - 1]
         group_profile.set_picked(group, participant_picked)
         group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
@@ -163,4 +166,4 @@ class UnwrappedView(LoginRequiredMixin, View):
         group_member.save()
         context = {}
         messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
-        return redirect('group_home')
+        return redirect('group_view', group_name=group_name)
