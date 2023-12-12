@@ -63,7 +63,7 @@ class GroupManager():
     def get_is_open(self, group):
         """Returns the open status of the group"""
         try:
-            return SantaGroup.objects.filter(group_name=group).values('is_open') == True
+            return SantaGroup.objects.get(group_name=group).is_open
         except ObjectDoesNotExist:
             return None
 
