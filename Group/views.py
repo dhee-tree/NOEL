@@ -109,17 +109,22 @@ class WrappedView(LoginRequiredMixin, View):
                 messages.error(request, 'You are the only one on this group, invite your friends.')
                 return redirect('group_view', group_name=group_name)
             else:
-                if group_profile.check_pick(group):
-                    messages.error(request, f'You already picked a user for {group}.')
-                    return redirect('group_home')
+                if group_profile.get_is_open(group):
+                    if group_profile.check_pick(group):
+                        messages.error(request, f'You already picked a user for {group}.')
+                        return redirect('group_home')
+                    else:
+                        context = {
+                            'user_profile': user_profile.get_profile(),
+                            'range': range(1, GroupMember.objects.filter(group_id=group).count()),
+                            'group': group,
+                            'members_list': group_profile.get_group_members_list(group),
+                            'group_status': group_profile.get_is_open(group),
+                        }
+                        return render(request, self.template_name, context)
                 else:
-                    context = {
-                        'user_profile': user_profile.get_profile(),
-                        'range': range(1, GroupMember.objects.filter(group_id=group).count()),
-                        'group': group,
-                        'members_list': group_profile.get_group_members_list(group),
-                    }
-                    return render(request, self.template_name, context)
+                    messages.error(request, f'You cannot open your wrapped for {group}, it is closed.')
+                    return redirect('group_view', group_name=group_name)
         else:
             messages.error(request, f'You have already opened your for {group}.')
             return redirect('group_home')
