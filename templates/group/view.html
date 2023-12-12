@@ -33,13 +33,13 @@
                 {% if wrapped %}
                     <p>You have not yet opened your wrap</p>
                     <div class="btn-group-container">
-                        <a href="{% url 'wrapped' %}" class="btn btn-wrap">Open Wrap</a>
+                        <a href="{% url 'group_wrapped' group_name=group %}" class="btn btn-wrap">Open Wrap</a>
                         <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
                     </div>
                 {% else %}
                     <p>You already know who you are visiting!</p>
                     <div class="btn-group-container">
-                        <a href="{% url 'unwrapped' %}" class="btn" id="unwrapped">Show Me</a>
+                        <a href="{% url 'group_unwrapped' group_name=group %}" class="btn" id="unwrapped">Show Me</a>
                         <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
                     </div>
                 {% endif %}

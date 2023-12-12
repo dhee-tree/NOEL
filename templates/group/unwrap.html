@@ -10,12 +10,12 @@
     <div class="container auth-container">
         <div class="row">
             <div class="col-12">
-                <p>Ho Ho Ho!</p>
+                <p>Ho Ho Ho! {{ user_profile.first_name }}</p>
                 <p>You have done it!</p>
 
-                <p>Here is your pick: {{ picked }}</p>
+                <p>For {{ group.group_name }}, you picked: {{ picked }}</p>
 
-                <a href="{% url 'home' %}" class="btn btn-wrap" id="unwrapped">Go Back</a>
+                <a href="{% url 'group_view' group_name=group.group_name %}" class="btn btn-wrap" id="unwrapped">Go Back</a>
             </div>
         </div>
     </div>

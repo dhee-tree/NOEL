@@ -12,11 +12,12 @@
             <div class="col-12">
                 <div class="wrapped-container">
                     <div class="wrapped-text">
-                        <p>These are all the people left on {{ user_profile.group_id.group_name }}</p>
+                        <h2>Hello, {{ user_profile.user.first_name }}</h2>
+                        <p>These are all the people left on {{ group.group_name }}</p>
                         <p>Pick one:</p>
                         <p>{{ members_list }}</p>
                     </div>
-                    <form method="post" action="{% url 'unwrapped' %}">
+                    <form method="post" action="{% url 'group_unwrapped' group_name=group %}">
                         {% csrf_token %}
                         <div class="wrapped-container">
                             {% for i in range %}
