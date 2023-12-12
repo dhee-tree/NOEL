@@ -1,0 +1,46 @@
+<!-- Settings modal -->
+<div class="modal fade" id="settingModal" tabindex="-1" aria-labelledby="settingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="settingModal">Changing {{ group }} settings</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="code_form">
+                    {% csrf_token %}
+                    {% if is_open %}
+                        <p>Group is open</p>
+                        <input type="checkbox" name="group_check_box" id="group_check_box" checked="checked">
+                        <label for="group_check_box">Open group</label>
+                    {% else %}
+                        <p for="open">Group is closed</p>
+                        <input type="checkbox" name="open" id="open">
+                        <label for="open">Open group</label>
+                    {% endif %}
+            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Save Changes</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModal">Deleting {{ group }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <span class="highlight">{{ group }}</span>?</p>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cancel</button>
+                <a href="{% url 'group_delete' group_name=group.group_name %}" class="btn btn-danger">Yes, delete</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -57,43 +57,18 @@
                     </ul>
                 {% endif %}
 
-                <!-- Group settings modal trigger -->
                 {% if group_owner %}
-                    <hr>
+                <hr>
+                    <!-- Group settings modal trigger -->
                     <p class="text-info group-settings">Use the settings to close the group from new participants.</p>
-                    <i class="fa-solid fa-gear btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                    <i class="fa-solid fa-gear btn btn-warning" data-bs-toggle="modal" data-bs-target="#settingModal"></i>
+                    <!-- Group delete trigger -->
+                    <i class="fa-solid fa-trash-can btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+
+                    <!-- Modals -->
+                    {% include "utils/modal.html" %}
                 {% endif %}
 
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Changing {{ group }} settings</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="post" id="code_form">
-                                    {% csrf_token %}
-                                    {% if is_open %}
-                                        <p>Group is open</p>
-                                        <input type="checkbox" name="group_check_box" id="group_check_box" checked="checked">
-                                        <label for="group_check_box">Open group</label>
-                                    {% else %}
-                                        <p for="open">Group is closed</p>
-                                        <input type="checkbox" name="open" id="open">
-                                        <label for="open">Open group</label>
-                                    {% endif %}
-                            </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Save Changes</button>
-                                    </div>
-                                </form>
-                        </div>
-                    </div>
-                </div>
-                
             </div>
         </div>
     </div>
