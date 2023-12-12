@@ -52,7 +52,7 @@ h1 {
 }
 
 .carousel-item {
-    height: 500px;
+    height: 350px;
 }
 
 /* Sizes for smaller screens */
@@ -70,5 +70,9 @@ h1 {
 
     .svg {
         height: 150px;
+    }
+
+    .auth-btn {
+        margin-top: 2rem;
     }
 }
