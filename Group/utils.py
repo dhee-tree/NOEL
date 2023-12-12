@@ -99,15 +99,10 @@ class GroupManager():
         except ObjectDoesNotExist:
             return None
 
-    def check_pick(self):
+    def check_pick(self, group):
         """Checks if the logged in user has been picked a participant"""
         try:
-            # get the all the group id of the logged in user
-            # self.group_id
-            # return True if the logged in user has been picked
-            # query the Pick model for entry with group_id matches any group_id in the group member model and picked_by matches the full name of logged in user
-            # return True if the query returns a result
-            # else return False
-            return Pick.objects.filter(picked_by=self.user.userprofile.full_name).exists()
+            Pick.objects.get(picked_by=self.user.userprofile.full_name, group_id=group)
+            return True
         except ObjectDoesNotExist:
             return False
