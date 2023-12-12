@@ -1,14 +1,16 @@
 from .forms import createGroup
 from .utils import GroupManager
 from django.contrib import messages
+from django.urls import reverse_lazy
 from Profile.utils import GetUserProfile
 from .models import SantaGroup, GroupMember
 from django.shortcuts import render, redirect
+from django.views.generic.edit import DeletionMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, CreateView, ListView, View
+from django.views.generic import TemplateView, CreateView, ListView, View, DeleteView
 
 # Create your views here.
 @method_decorator(csrf_protect, name='dispatch')
@@ -195,3 +197,27 @@ class UnwrappedView(LoginRequiredMixin, View):
             else:
                 messages.error(request, f'You cannot pick a user for {group}, it is closed.')
                 return redirect('group_view', group_name=group_name)
+
+
+class DeleteGroupView(LoginRequiredMixin, DeletionMixin, View):
+    model = SantaGroup
+    template_name = 'group/delete.html'
+    success_url = reverse_lazy('/group/home/')
+
+    def get(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        if group_profile.check_group_creator(group):
+            group.delete()
+            messages.success(request, f'{group} deleted successfully!')
+            return redirect('group_home')
+        else:
+            messages.error(request, f'You are not the owner {group}.')
+            return redirect('group_home')
