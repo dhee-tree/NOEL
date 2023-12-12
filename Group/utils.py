@@ -49,11 +49,21 @@ class GroupManager():
         except ObjectDoesNotExist:
             return False
 
+    def get_group_members_list(self, group):
+        """Returns a list of all group members without the loggedin user and users who have not been picked"""
+        try:
+            group_list = list(GroupMember.objects.filter(group_id=group).exclude(user_profile_id=self.user.userprofile).values_list('user_profile_id__full_name', flat=True))
+            for member in group_list:
+                if Pick.objects.filter(group_id=group, full_name=member).exists():
+                    group_list.remove(member)
+            return group_list
+        except ObjectDoesNotExist:
+            return None
+
     def get_is_open(self, group):
         """Returns the open status of the group"""
         try:
             return SantaGroup.objects.filter(group_name=group).values('is_open') == True
-            
         except ObjectDoesNotExist:
             return None
 
@@ -65,31 +75,27 @@ class GroupManager():
         except ObjectDoesNotExist:
             return False
     
-
-    # Copied
-    def get_group_members_list(self):
-        """Returns a list of all group members without the loggedin user and users who have not been picked"""
+    # Check user wrapped status
+    def get_wrapped(self, group):
+        """Returns Boolean value if user has opened their wrapped or not"""
         try:
-            group_list = list(UserProfile.objects.filter(group_id=self.get_profile().group_id).exclude(user=self.user).values_list('full_name', flat=True))
-            for member in group_list:
-                if Pick.objects.filter(group_id=self.get_profile().group_id, full_name=member).exists():
-                    group_list.remove(member)
-            return group_list
+            return GroupMember.objects.filter(group_id=group, user_profile_id=self.user.userprofile).get().is_wrapped
         except ObjectDoesNotExist:
             return None
 
-    def set_picked(self, picked):
+    # Picking
+    def set_picked(self, group, picked):
         """Sets the picked user to the loggedin user"""
         try:
-            Pick.objects.create(group_id=self.get_profile().group_id, full_name=picked, picked_by=self.get_profile().full_name)
+            Pick.objects.create(group_id=group, full_name=picked, picked_by=self.user.userprofile.full_name)
             return True
         except ObjectDoesNotExist:
             return False
 
-    def get_picked(self):
+    def get_picked(self, group):
         """Returns the picked user of the loggedin user"""
         try:
-            return Pick.objects.get(picked_by=self.get_profile().full_name)
+            return Pick.objects.get(group_id=group, picked_by=self.user.userprofile.full_name).full_name
         except ObjectDoesNotExist:
             return None
 
