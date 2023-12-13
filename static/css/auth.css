@@ -1,5 +1,9 @@
+.svg {
+    height: 250px;
+}
+
 .auth-container {
-    margin-top: 8rem;
+    margin-top: 2rem;
 }
 
 #id_username, #id_password, #code {
