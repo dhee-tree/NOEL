@@ -1,13 +1,12 @@
 import uuid
 from datetime import date
 from django.db import models
-from Auth.utils import groupJoinCode
 
 # Create your models here.
 class SantaGroup(models.Model):
     group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     group_name = models.CharField(max_length=50, unique=True)
-    group_code = models.CharField(max_length=6, unique=True, default=groupJoinCode())
+    group_code = models.CharField(max_length=6, unique=True, default='')
     is_open = models.BooleanField(default=True)
     created_by = models.ForeignKey('Profile.UserProfile', on_delete=models.SET_NULL, null=True)
     date_created = models.DateField(default=date.today)

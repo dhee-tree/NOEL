@@ -1,17 +1,28 @@
+import random, string
 from django.db import IntegrityError
 from Profile.models import UserProfile
 from .models import SantaGroup, GroupMember, Pick
 from django.core.exceptions import ObjectDoesNotExist
+
 
 class GroupManager():
     """Class to manage groups"""
     def __init__(self, user):
         self.user = user
 
+    def groupJoinCode(self):
+        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+
     def create_group(self, group_id):
         """Sets the group any user"""
         try:
-            GroupMember.objects.create(group_id=group_id, user_profile_id=self.user.userprofile)
+            new_group = GroupMember.objects.create(group_id=group_id, user_profile_id=self.user.userprofile)
+            try:
+                new_group.group_id.group_code = self.groupJoinCode()
+                new_group.group_id.save()
+            except IntegrityError:
+                new_group.group_id.group_code = self.groupJoinCode()
+                new_group.group_id.save()
             return True
         except ObjectDoesNotExist:
             return False
