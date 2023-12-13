@@ -221,3 +221,31 @@ class DeleteGroupView(LoginRequiredMixin, DeletionMixin, View):
         else:
             messages.error(request, f'You are not the owner {group}.')
             return redirect('group_home')
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class InviteFriendsView(LoginRequiredMixin, View):
+    template_name = 'group/group-invite.html'
+
+    def get(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        if group_profile.check_group_creator(group):
+            context = {
+                'group': group,
+                'user_profile': user_profile.get_profile(),
+            }
+            return render(request, self.template_name, context)
+        else:
+            messages.error(request, f'You are not the owner {group}.')
+            return redirect('group_home')
+
+    def post(self, request, group_name):
+        pass

@@ -1,0 +1,27 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Create Group{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/group.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="greet">
+                    <img src="{% static 'images/svg/group-invite.svg' %}" class="svg" alt="Inviting family and friends image">
+                    <p class="greet-text">Invite new participants.</p>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <a href="whatsapp://send?text=Hello%20Join%20me" target="_blank"><i class="fa-brands fa-whatsapp" style="color: #075e54;"> </i>WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

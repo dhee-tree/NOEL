@@ -4,6 +4,7 @@ from django.urls import path
 urlpatterns = [
     path('home/', views.HomeView.as_view(), name='group_home'),
     path('create/', views.CreateGroupView.as_view(), name='group_create'),
+    path('invite/<str:group_name>/', views.InviteFriendsView.as_view(), name='group_invite'),
     path('view/<str:group_name>/', views.ViewGroupView.as_view(), name='group_view'),
     path('view/<str:group_name>/wrapped/', views.WrappedView.as_view(), name='group_wrapped'),
     path('view/<str:group_name>/unwrapped/', views.UnwrappedView.as_view(), name='group_unwrapped'),
