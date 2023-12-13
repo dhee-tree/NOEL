@@ -46,6 +46,6 @@
 /* Change Password */
 .errorlist {
     color: red;
-    /* remove bullet points */
-
+    list-style-type: none;
+    font-size: 1rem;
 }

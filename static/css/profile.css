@@ -28,6 +28,12 @@
     color: white;
 }
 
+.btn-edit-profile:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
+
 .btn-group-create {
     background-color: var(--secondary-color);
     color: white;
