@@ -10,7 +10,10 @@
     <div class="container auth-container">
         <div class="row">
             <div class="col-12">
-                <p>Ho Ho Ho! {{ user_profile.first_name }}</p>
+                <div class="greet">
+                    <img src="{% static 'images/svg/unwrapped.svg' %}" class="svg" alt="Unwrapped image">
+                    <h2 class="greet-text">Ho Ho Ho! {{ user_profile.user.first_name }}</h2>
+                </div>
                 <p>You have done it!</p>
 
                 <p>For {{ group.group_name }}, you picked: {{ picked }}</p>
