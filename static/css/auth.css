@@ -42,3 +42,10 @@
     font-size: 1rem;
     margin: 0;
 }
+
+/* Change Password */
+.errorlist {
+    color: red;
+    /* remove bullet points */
+
+}
