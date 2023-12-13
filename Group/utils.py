@@ -86,10 +86,12 @@ class GroupManager():
         except ObjectDoesNotExist:
             return None
 
-    def set_is_open(self, group, is_open):
+    def set_is_open(self, group, status):
         """Sets the open status of the group"""
         try:
-            group = SantaGroup.objects.filter(group_name=group).update(is_open=is_open)
+            santa_group = SantaGroup.objects.get(group_name=group)
+            santa_group.is_open = status
+            santa_group.save()
             return True
         except ObjectDoesNotExist:
             return False
