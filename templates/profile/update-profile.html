@@ -1,0 +1,27 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Updating Profile{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
+{% endblock %}
+
+{% block main %}
+    <div class="container auth-container">
+        <div class="row">
+            <div class="col-12">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-edit-profile">Update</button>
+                </form>
+
+                <hr>
+                
+                <h2>Change password</h2>
+                <a href="{% url 'update_password' %}" class="btn btn-edit-profile">Change Password</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

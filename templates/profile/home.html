@@ -45,7 +45,7 @@
                         <p>You are part of; <strong><u>{{ user_group_count }}</u></strong> {% if user_group_count > 1 %} groups {% else %} group {% endif %}</p>
                         <div class="btn-group-container">
                             <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
-                            <a href="#" class="btn btn-edit-profile">Edit Profile</a>
+                            <a href="{% url 'update_profile' %}" class="btn btn-edit-profile">Edit Profile</a>
                         </div>
                     {% endif %}
                     
