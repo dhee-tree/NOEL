@@ -4,12 +4,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from Profile.models import UserProfile
+from Profile.views import GetUserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 class LoginView(View):
@@ -79,3 +80,49 @@ class RegisterView(View):
                 return render(request, self.template_name, context)
         else:
             return render(request, self.template_name, {'form': post_form, 'formError': True})
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class ChangePasswordView(LoginRequiredMixin, View):
+    template_name = 'auth/change-password.html'
+    password_form = None
+
+    def get(self, request):
+        if request.user.is_staff:
+            messages.error(request, 'You are not allowed to update password. Admins do not have a profile.')
+            return redirect('admin:index')
+        else:
+            user_profile = GetUserProfile(request.user)
+            context = {
+                'user_profile': user_profile.get_profile(),
+                'password_form': self.password_form,
+            }
+            return render(request, self.template_name, context)
+
+    def post(self, request):
+        post_form = self.password_form(request.POST)
+        if post_form.is_valid():
+            user = User.objects.get(username=request.user.username)
+            new_password = request.POST.get('new_password')
+            old_password = request.POST.get('old_password')
+            user_password = check_password(old_password, user.password)
+            if not user_password:
+                messages.error(request, 'Invalid old password.')
+                return redirect('update_password')
+            else:
+                if new_password == old_password:
+                    messages.error(request, 'New password cannot be same as old password.')
+                    return redirect('update_password')
+                else:
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    user = authenticate(username=request.user.username, password=new_password)
+                    login(request, user)
+
+                    messages.success(request, 'You have successfully updated your password.')
+                    return redirect('home')
+        else:
+            context = {
+                'password_form': post_form,
+            }
+            return render(request, self.template_name, context)
