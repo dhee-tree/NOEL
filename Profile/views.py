@@ -42,3 +42,35 @@ class HomeView(LoginRequiredMixin, View):
         else:
             messages.error(request, 'Invalid group code.')
             return redirect('home')
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class UpdateProfileView(LoginRequiredMixin, View):
+    template_name = 'profile/update-profile.html'
+    form = None
+
+    def get(self, request):
+        if request.user.is_staff:
+            messages.error(request, 'You are not allowed to update profile. Admins do not have a profile.')
+            return redirect('admin:index')
+        else:
+            user_profile = GetUserProfile(request.user)
+            context = {
+                'user_profile': user_profile.get_profile(),
+                'form': self.form,
+            }
+            return render(request, self.template_name, context)
+        
+    def post(self, request):
+        post_form = self.form(request.POST)
+        if post_form.is_valid():
+            request.user.first_name = request.POST.get('first_name')
+            request.user.last_name = request.POST.get('last_name')
+            request.user.save()
+            user_profile = GetUserProfile(request.user)
+            user_profile.update_profile(request.POST.get('gender'))
+            messages.success(request, 'You have successfully updated your profile.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid form.')
+            return redirect('update_profile')
