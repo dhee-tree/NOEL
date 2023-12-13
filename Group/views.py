@@ -39,6 +39,7 @@ class HomeView(LoginRequiredMixin, View):
             return redirect('group_home')
 
 
+@method_decorator(csrf_protect, name='dispatch')
 class CreateGroupView(LoginRequiredMixin, CreateView):
     model = SantaGroup
     form_class = createGroup
@@ -55,6 +56,8 @@ class CreateGroupView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(group)
 
+
+@method_decorator(csrf_protect, name='dispatch')
 class ViewGroupView(LoginRequiredMixin, View):
     template_name = 'group/view.html'
 
@@ -199,6 +202,49 @@ class UnwrappedView(LoginRequiredMixin, View):
                 return redirect('group_view', group_name=group_name)
 
 
+class LeaveGroupView(LoginRequiredMixin, View):
+    def get(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        if group_profile.check_group_member(group):
+            group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
+            group_member.delete()
+            messages.success(request, f'You have left {group}.')
+            return redirect('group_home')
+        else:
+            messages.error(request, f'You are not a member of {group}.')
+            return redirect('group_home')
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class EditGroupView(LoginRequiredMixin, View):
+    def post(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+
+        try:
+            group = SantaGroup.objects.get(group_name=group_name)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
+            return redirect('group_home')
+
+        if group_profile.check_group_creator(group):
+            group.group_name = request.POST.get('group_name')
+            group.save()
+            messages.success(request, f'{group} edited successfully!')
+            return redirect('group_home')
+        else:
+            messages.error(request, f'You are not the owner {group}.')
+            return redirect('group_home')
+
+
 class DeleteGroupView(LoginRequiredMixin, DeletionMixin, View):
     model = SantaGroup
     template_name = 'group/delete.html'
@@ -223,7 +269,6 @@ class DeleteGroupView(LoginRequiredMixin, DeletionMixin, View):
             return redirect('group_home')
 
 
-@method_decorator(csrf_protect, name='dispatch')
 class InviteFriendsView(LoginRequiredMixin, View):
     template_name = 'group/group-invite.html'
 
