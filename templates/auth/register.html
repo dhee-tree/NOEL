@@ -11,6 +11,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="login-form"> 
+                    <img src="{% static 'images/svg/register.svg' %}" class="d-block w-100 svg" alt="Register image">
                     <h1 class="text-center">Register</h1>
                     <form action="" method="post">
                         {% csrf_token %}
@@ -36,7 +37,7 @@
                         {{ form.gender.label_tag }}
                         {{ form.gender }}
                         <p>By clicking Register you accept our <a href="#">Terms and conditions</a></p>
-                        <button type="submit" class="btn btn-success">Register</button>
+                        <button type="submit" class="auth-btn">Register</button>
                     </form>
                     
                 </div>
