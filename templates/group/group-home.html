@@ -1,5 +1,5 @@
 {% extends "utils/base.html" %}
-{% block title %}NOEL - Create Group{% endblock %}
+{% block title %}NOEL - Group Home{% endblock %}
 {% load static %}
 
 {% block style %}
@@ -11,11 +11,14 @@
     <div class="container auth-container">
         <div class="row">
             <div class="col-12">
-                <p>Here are the groups you are a member of</p>
-                <ul>
+                <div class="greet">
+                    <img src="{% static 'images/svg/group.svg' %}" class="svg" alt="Greeting santa image">
+                    <p class="greet-text">Here are your Secret Santa groups!</p>
+                </div>
+                <ul class="group-list">
                     {% for group in groups %}
                     <li>
-                        <a href="{% url 'group_view' group_name=group.group_id %}">{{ group.group_id }}</a>
+                        <a href="{% url 'group_view' group_name=group.group_id %}" class="btn btn-group">{{ group.group_id }}</a>
                     </li>
                     {% endfor %}
                 </ul>
@@ -33,7 +36,7 @@
                     </ul>
                 {% endif %}
                 <div class="btn-group-container">
-                    <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
+                    <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a> <span>or</span>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Join Group
