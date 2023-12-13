@@ -1,0 +1,22 @@
+<!-- Join modal -->
+<div class="modal fade" id="joinModal" tabindex="-1" aria-labelledby="joinModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="joinModalLabel">Joining new Santa Group</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="code_form">
+                    {% csrf_token %}
+                    <label for="group_code">Enter Group Code:</label>
+                    <input type="text" name="group_code" id="group_code" maxlength="6" required>
+            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Find Group</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
