@@ -6,3 +6,33 @@
     background-color: #e3e3d8;
     border: 2px solid #000;
 }
+
+.group-list {
+    /* Remove bullet points */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.group-list a {
+    /* Add a black text color to all links inside the list */
+    text-decoration: none;
+    display: block;
+    color: white;
+}
+
+.group-list li {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #f1f1f1;
+}
+
+.btn-group {
+    background-color: var(--primary-color);
+}
