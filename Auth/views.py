@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from Profile.models import UserProfile
 from django.contrib.auth.models import User
-from .utils import authCodeGenerator, sendEmail
 from django.contrib.auth import authenticate, login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect

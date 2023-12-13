@@ -1,17 +1,8 @@
-import random, string
 from django.conf import settings
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
-
-def authCodeGenerator():
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-
-
-def groupJoinCode():
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
 
 
 def sendEmail(request, user, code):
