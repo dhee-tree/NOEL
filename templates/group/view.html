@@ -48,6 +48,10 @@
                     </div>
                 {% endif %}
 
+                <div class="leave mt-4">
+                    <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#leaveModal">Leave Group</a>
+                </div>
+
                 {% if messages %}
                     <ul class="messages mt-2">
                         {% for message in messages %}
@@ -64,10 +68,12 @@
                 {% if group_owner %}
                 <hr>
                     <!-- Group settings modal trigger -->
-                    <p class="text-info group-settings">Use the settings to close the group from new participants.</p>
+                    <p class="text-info group-settings">As owner you can make changes here.</p>
                     <i class="fa-solid fa-gear btn btn-warning" data-bs-toggle="modal" data-bs-target="#settingModal"></i>
                     <!-- Group delete trigger -->
                     <i class="fa-solid fa-trash-can btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+                    <!-- Group edit trigger -->
+                    <i class="fa-solid fa-pen btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>
 
                     <!-- Modals -->
                     {% include "utils/modal.html" %}
