@@ -11,7 +11,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="confirm-form"> 
-                    <p>Ho Ho Ho {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}.</p>
+                    <div class="greet">
+                        <img src="{% static 'images/svg/santa.svg' %}" class="svg" alt="Greeting santa image">
+                        <p class="greet-text"><i class="fa-solid fa-quote-left fa-sm" style="color: #2b2a4c;"></i> Ho Ho Ho! {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}. <i class="fa-solid fa-quote-right fa-sm" style="color: #2b2a4c;"></i></p>
+                    </div>
                     
                     {% if messages %}
                         <ul class="messages">
@@ -29,39 +32,21 @@
                     {% if user_group_count == 0 %}
                     <p>You are not a member of any group yet!</p>
                         <div class="btn-group-container">
-                            <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a>
+                            <a href="{% url 'group_create' %}" class="btn btn-group-create">Create Group</a> <span>or</span>
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" class="btn btn-group-join" data-bs-toggle="modal" data-bs-target="#joinModal">
                                 Join Group
                             </button>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Joining new Santa Group</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="post" id="code_form">
-                                                {% csrf_token %}
-                                                <label for="group_code">Enter Group Code:</label>
-                                                <input type="text" name="group_code" id="group_code" maxlength="6" required>
-                                        </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary" id="submit" onClick="loading();">Find Group</button>
-                                                </div>
-                                            </form>
-                                    </div>
-                                </div>
-                            </div>
+                            {% include "utils/joinModal.html" %}
                         </div>
                     {% else %}
                         <p>You are part of; <strong><u>{{ user_group_count }}</u></strong> {% if user_group_count > 1 %} groups {% else %} group {% endif %}</p>
-                        <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
-                        <p>There are {{ group_members_count }} other people in this group!</p>
+                        <div class="btn-group-container">
+                            <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a> <span>or</span>
+                            <a href="#" class="btn btn-edit-profile">Edit Profile</a>
+                        </div>
                     {% endif %}
                     
                 </div>

@@ -1,11 +1,31 @@
+.greet {
+    margin-bottom: 90px;
+    display: flex;
+}
+
+.greet-text {
+    margin: auto 0;
+}
+
+.svg {
+    height: 80px;
+    float: left;
+    margin-right: 10px;
+}
+
 .btn-group-container {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
 }
 
-.btn-group-create, .btn-group-join, .btn-view-group, .btn-wrap, #unwrapped {
+.btn-group-create, .btn-group-join, .btn-view-group, .btn-edit-profile, .btn-wrap, #unwrapped {
     width: 40%;
+}
+
+.btn-edit-profile {
+    background-color: var(--secondary-color);
+    color: white;
 }
 
 .btn-group-create {
