@@ -4,12 +4,17 @@
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/group.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
 {% endblock %}
 
 {% block main %}
     <div class="container auth-container">
         <div class="row">
             <div class="col-12">
+                <div class="greet">
+                    <img src="{% static 'images/svg/group-create.svg' %}" class="svg" alt="Creating group image">
+                    <p class="greet-text">Creating Secret Santa Group</p>
+                </div>
                 <div class="login-form"> 
                     <form method="post">
                         {% csrf_token %}
