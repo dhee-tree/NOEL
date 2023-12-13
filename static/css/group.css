@@ -15,7 +15,6 @@
 }
 
 .group-list a {
-    /* Add a black text color to all links inside the list */
     text-decoration: none;
     display: block;
     color: white;
@@ -41,4 +40,35 @@
 .fa-copy {
     cursor: pointer;
     margin: 0 8px;
+}
+
+/* Wrap and unwrapped */
+#unwrapped {
+    background-color: var(--text-color);
+    color: #000;
+}
+
+#unwrapped:hover {
+    background-color: var(--text-color);
+    opacity: 0.8;
+    color: #000;
+}
+
+.wrapped-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.wrapped-text {
+    width: 100%;
+}
+
+.wrapped {
+    margin: 10px;
+}
+
+.btn-pick {
+    background-color: var(--secondary-color);
+    color: white;
+    width: 40%;
 }

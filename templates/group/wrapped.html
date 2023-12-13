@@ -3,35 +3,47 @@
 {% load static %}
 
 {% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/group.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}" />
 {% endblock %}
 
 {% block main %}
-    <div class="container auth-container">
+    <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="wrapped-container">
                     <div class="wrapped-text">
-                        <h2>Hello, {{ user_profile.user.first_name }}</h2>
-                        <p>These are all the people left on {{ group.group_name }}</p>
+                        <div class="greet">
+                            <img src="{% static 'images/svg/wrapped.svg' %}" class="svg" alt="Wrapped image">
+                            <h2 class="greet-text">Hello, {{ user_profile.user.first_name }}</h2>
+                        </div>
+                        <p>These are all the people left on <strong>{{ group.group_name }}</strong></p>
                         <p>Pick one:</p>
                         <p>{{ members_list }}</p>
                     </div>
-                    <form method="post" action="{% url 'group_unwrapped' group_name=group %}">
-                        {% csrf_token %}
-                        <div class="wrapped-container">
-                            {% for i in range %}
-                            <div class="wrapped">
-                                <label for="{{i}}"><i class="fa-solid fa-gift fa-beat-fade fa-2xl" style="color: #b31312;"></i></label>
-                                <input type="radio" name="pick" id="{{i}}" value="{{i}}" required>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        
-                        <button type="submit" class="btn btn-pick">Pick</button>
-                    </form>
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post" action="{% url 'group_unwrapped' group_name=group %}">
+                    {% csrf_token %}
+                    <div class="wrapped-container">
+                        {% for i in range %}
+                        <div class="wrapped">
+                            <label for="{{i}}"><i class="fa-solid fa-gift fa-beat-fade fa-2xl" style="color: #b31312;"></i></label>
+                            <input type="radio" name="pick" id="{{i}}" value="{{i}}" required>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-pick mt-4">Pick</button>
+                </form>
+            </div>
+<!--             
+            <div class="col-md-6">
+                <a href="{% url 'group_view' group_name=group.group_name %}" class="btn btn-view-group">Go Back</a>
+            </div> -->
         </div>
     </div>
 {% endblock %}
