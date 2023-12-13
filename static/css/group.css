@@ -36,3 +36,9 @@
 .btn-group {
     background-color: var(--primary-color);
 }
+
+/* Copy to clipboard */
+.fa-copy {
+    cursor: pointer;
+    margin: 0 8px;
+}
