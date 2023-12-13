@@ -4,7 +4,7 @@ NOEL is an application for family and friends to play Secret Santa remotely accr
 ## How it works
 A group representative contacts NOEL to create a group with the names and email addresses of the participants. 
 
-NOLE admin would:
+NOEL admin would:
 1. Create the group.
 2. Add participants.
 3. Send message to the group on how to access their account.
