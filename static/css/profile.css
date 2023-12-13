@@ -68,6 +68,12 @@
     color: white;
 }
 
+.btn-view-group:hover {
+    background-color: var(--primary-color);
+    opacity: 0.8;
+    color: white;
+}
+
 .btn-wrap:hover {
     background-color: var(--secondary-color);
     opacity: 0.8;

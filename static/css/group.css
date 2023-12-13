@@ -72,3 +72,9 @@
     color: white;
     width: 40%;
 }
+
+.errorlist {
+    color: red;
+    list-style-type: none;
+    font-size: 1rem;
+}
