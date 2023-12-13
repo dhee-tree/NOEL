@@ -15,7 +15,8 @@
                     <img src="{% static 'images/svg/group-view.svg' %}" class="svg" alt="Viewing group image">
                     <h1 class="greet-text">{{ group }} group</h1>
                 </div>
-                <span>Invite code: </span><span class="invite-code">{{ group.group_code }}</span> <i class="fa-regular fa-copy" onclick="copyToClipboard()"></i> <a href="#">Invite friends</a>
+                <span>Invite code: </span><span class="invite-code">{{ group.group_code }}</span> <i class="fa-regular fa-copy" onclick="copyToClipboard()"></i> 
+                <a href="{% url 'group_invite' group_name=group %}">Invite friends</a>
                 <hr>
                 
                 <p>Hi, {{ user_profile.user.first_name }} </p>
