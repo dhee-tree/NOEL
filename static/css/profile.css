@@ -39,8 +39,20 @@
     color: white;
 }
 
+.btn-group-create:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
+
 .btn-group-join {
     background-color:aqua;
+}
+
+.btn-group-join:hover {
+    background-color: aqua;
+    opacity: 0.8;
+    color: white;
 }
 
 /* For Modal */

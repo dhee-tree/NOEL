@@ -36,6 +36,12 @@
     background-color: var(--primary-color);
 }
 
+.btn-group:hover {
+    background-color: var(--primary-color);
+    opacity: 0.8;
+    color: white;
+}
+
 /* Copy to clipboard */
 .fa-copy {
     cursor: pointer;
@@ -73,6 +79,12 @@
     width: 40%;
 }
 
+.btn-pick:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
+
 .errorlist {
     color: red;
     list-style-type: none;
@@ -84,6 +96,12 @@
     background-color: var(--text-color);
     color: rgb(3, 3, 3);
     text-decoration: none;
+}
+
+.leave a:hover {
+    background-color: var(--text-color);
+    opacity: 0.8;
+    color: rgb(3, 3, 3);
 }
 
 #group_name {
