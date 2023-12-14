@@ -127,6 +127,13 @@ class GroupManager():
         except ObjectDoesNotExist:
             return None
 
+    def get_picked_email(self, group):
+        """Returns the picked user email of the loggedin user"""
+        try:
+            return UserProfile.objects.get(full_name=self.get_picked(group)).user.email
+        except ObjectDoesNotExist:
+            return None
+
     def check_pick(self, group):
         """Checks if the logged in user has been picked a participant"""
         try:

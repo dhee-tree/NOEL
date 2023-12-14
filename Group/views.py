@@ -164,6 +164,7 @@ class UnwrappedView(LoginRequiredMixin, View):
             'group': group,
             'user_profile': user_profile.get_profile(),
             'picked_address': group_profile.get_picked_address(group),
+            'picked_email': group_profile.get_picked_email(group),
             }
         return render(request, self.template_name, context)
 
