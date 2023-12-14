@@ -60,6 +60,17 @@
     color: #000;
 }
 
+.picked-ping {
+    color: #000;
+    font-size: 1rem;
+}
+
+.picked-ping a {
+    color: #12b31f;
+    margin-left: 2px;
+    text-decoration: none;
+}
+
 .wrapped-container {
     display: flex;
     flex-wrap: wrap;
