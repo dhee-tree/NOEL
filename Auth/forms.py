@@ -11,7 +11,7 @@ class registerForm(forms.Form):
     gender_choices = (
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Non-binary', 'Non-binary'),
+        ('Prefer not to say', 'Prefer not to say'),
     )
     email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'email', 'name': 'email', 'placeholder': 'Enter email'}))
     password = forms.CharField(max_length=100, required=True, widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'password', 'name': 'password', 'placeholder': 'Enter password'}))
