@@ -20,25 +20,16 @@ class HomeView(LoginRequiredMixin, View):
     template_name = 'group/group-home.html'
 
     def get(self, request):
-        context = {
-            'groups': GroupManager(request.user).user_group(),
-        }
+        verified = VerificationManager(GetUserProfile(request.user).get_profile()).check_user_verified()
+        if verified:
+            context = {
+                'groups': GroupManager(request.user).user_group(),
+            }
 
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        group_code = request.POST.get('group_code').upper()
-        group_profile = GroupManager(request.user)
-        if group_profile.check_group_code(group_code):
-            if group_profile.join_group(group_code):
-                messages.success(request, 'You have successfully joined the group.')
-                return redirect('group_home')
-            else:
-                messages.error(request, 'You are already a member of this group.')
-                return redirect('group_home')
+            return render(request, self.template_name, context)
         else:
-            messages.error(request, 'Invalid group code.')
-            return redirect('group_home')
+            messages.error(request, 'You need to verify your account to view groups.')
+            return redirect('home')
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -66,6 +57,31 @@ class CreateGroupView(LoginRequiredMixin, View):
         else:
             messages.error(request, f'{group_name} already exists.')
             return redirect('group_create')
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class JoinGroupView(LoginRequiredMixin, View):
+    def post(self, request):
+        group_code = request.POST.get('group_code').upper()
+        group_profile = GroupManager(request.user)
+        verified = VerificationManager(GetUserProfile(request.user).get_profile()).check_user_verified()
+        if verified:
+            if group_profile.check_group_code(group_code):
+                if group_profile.join_group(group_code):
+                    messages.success(request, 'You have successfully joined the group.')
+                    return redirect('group_home')
+                else:
+                    messages.error(request, 'You are already a member of this group.')
+                    return redirect('group_home')
+            else:
+                messages.error(request, 'Invalid group code.')
+                if verified:
+                    return redirect('group_home')
+                else:
+                    return redirect('home')
+        else:
+            messages.error(request, 'You need to verify your account to join a group.')
+            return redirect('home')
 
 
 @method_decorator(csrf_protect, name='dispatch')
