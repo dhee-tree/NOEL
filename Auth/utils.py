@@ -22,6 +22,10 @@ class VerificationManager():
         except ObjectDoesNotExist:
             return False
 
+    def check_user_verified(self):
+        """Checks if the user is verified"""
+        return self.profile.is_verified
+
 # class VerificationTokenGenerator(PasswordResetTokenGenerator):
 #     def _make_hash_value(self, user, timestamp):
 #         return (
