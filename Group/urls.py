@@ -1,9 +1,10 @@
 from . import views
 from django.urls import path
+from .forms import createGroup
 
 urlpatterns = [
     path('home/', views.HomeView.as_view(), name='group_home'),
-    path('create/', views.CreateGroupView.as_view(), name='group_create'),
+    path('create/', views.CreateGroupView.as_view(form=createGroup), name='group_create'),
     path('invite/<str:group_name>/', views.InviteFriendsView.as_view(), name='group_invite'),
     path('leave/<str:group_name>/', views.LeaveGroupView.as_view(), name='group_leave'),
     path('edit/<str:group_name>/', views.EditGroupView.as_view(), name='group_edit'),

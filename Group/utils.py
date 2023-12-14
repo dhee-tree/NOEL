@@ -13,17 +13,15 @@ class GroupManager():
     def groupJoinCode(self):
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
 
-    def create_group(self, group_id):
-        """Sets the group any user"""
+    def create_group(self, group_name):
+        """Create a new group by the loggedin user"""
         try:
-            new_group = GroupMember.objects.create(group_id=group_id, user_profile_id=self.user.userprofile)
-            try:
-                new_group.group_id.group_code = self.groupJoinCode()
-                new_group.group_id.save()
-            except IntegrityError:
-                new_group.group_id.group_code = self.groupJoinCode()
-                new_group.group_id.save()
+            group_code = self.groupJoinCode()
+            new_group = SantaGroup.objects.create(group_name=group_name, group_code=group_code, created_by=self.user.userprofile)
+            GroupMember.objects.create(group_id=new_group, user_profile_id=self.user.userprofile)
             return True
+        except IntegrityError:
+            return False
         except ObjectDoesNotExist:
             return False
 
