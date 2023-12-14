@@ -38,8 +38,12 @@
                                 Join Group
                             </button>
 
+                            
                             <!-- Modal -->
                             {% include "utils/joinModal.html" %}
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'update_profile' %}" class="btn btn-edit-profile">Edit Profile</a>
                         </div>
                     {% else %}
                         <p>You are part of; <strong><u>{{ user_group_count }}</u></strong> {% if user_group_count > 1 %} groups {% else %} group {% endif %}</p>
