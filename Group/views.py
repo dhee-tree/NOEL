@@ -67,12 +67,17 @@ class JoinGroupView(LoginRequiredMixin, View):
         verified = VerificationManager(GetUserProfile(request.user).get_profile()).check_user_verified()
         if verified:
             if group_profile.check_group_code(group_code):
-                if group_profile.join_group(group_code):
-                    messages.success(request, 'You have successfully joined the group.')
-                    return redirect('group_home')
-                else:
+                group = SantaGroup.objects.get(group_code=group_code)
+                if group_profile.check_group_member(group):
                     messages.error(request, 'You are already a member of this group.')
                     return redirect('group_home')
+                else:
+                    if group_profile.join_group(group_code):
+                            messages.success(request, 'You have successfully joined the group.')
+                            return redirect('group_home')
+                    else:
+                        messages.error(request, 'This group has been closed by the owner.')
+                        return redirect('group_home')
             else:
                 messages.error(request, 'Invalid group code.')
                 if verified:
