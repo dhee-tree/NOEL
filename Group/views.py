@@ -53,6 +53,7 @@ class CreateGroupView(LoginRequiredMixin, View):
         group_manager = GroupManager(self.request.user)
         if group_manager.create_group(group_name):
             messages.success(request, 'Group created successfully!')
+            messages.success(request, 'You can now invite your friends.')
             return redirect('group_home')
         else:
             messages.error(request, f'{group_name} already exists.')
