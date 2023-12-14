@@ -1,5 +1,5 @@
 {% extends "utils/base.html" %}
-{% block title %}NOEL - Create Group{% endblock %}
+{% block title %}NOEL - Group Invite{% endblock %}
 {% load static %}
 
 {% block style %}
@@ -13,15 +13,20 @@
             <div class="col-12">
                 <div class="greet">
                     <img src="{% static 'images/svg/group-invite.svg' %}" class="svg" alt="Inviting family and friends image">
-                    <p class="greet-text">Invite new participants.</p>
+                    <p class="greet-text">Invite new participants</p>
                 </div>
             </div>
 
             <div class="col-12">
-                <a href="whatsapp://send?text=Hello%20Join%20me" target="_blank"><i class="fa-brands fa-whatsapp" style="color: #075e54;"> </i>WhatsApp</a>
+                <hr>
+                <p>Share NOEL with you family and friends.</p>
+                <a href="#" id="whatsappLink" target="_blank" style="color: #075e54;"><i class="fa-brands fa-whatsapp" style="color: #075e54;"></i> WhatsApp</a>
             </div>
         </div>
     </div>
 
 {% endblock %}
 
+{% block script %}
+<script src="{% static 'js/group.js' %}"></script>
+{% endblock %}

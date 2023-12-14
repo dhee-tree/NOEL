@@ -1,3 +1,7 @@
+a {
+    text-decoration: none !important;
+}
+
 .group-settings {
     font-size: .6em;
 }
@@ -15,7 +19,6 @@
 }
 
 .group-list a {
-    text-decoration: none;
     display: block;
     color: white;
 }
@@ -68,7 +71,6 @@
 .picked-ping a {
     color: #12b31f;
     margin-left: 2px;
-    text-decoration: none;
 }
 
 .wrapped-container {
@@ -106,7 +108,6 @@
 .leave a {
     background-color: var(--text-color);
     color: rgb(3, 3, 3);
-    text-decoration: none;
 }
 
 .leave a:hover {
