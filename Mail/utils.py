@@ -25,3 +25,17 @@ class MailManager():
         except Exception as e:
             print(e)
             return False
+
+    def send_verification_email(self, first_name, verification_code):
+        """Sends an email to verify a user"""
+        subject = 'Verify your email'
+        html_message = render_to_string('mail/verify_email.html', {'verification_code': verification_code, 'first_name': first_name})
+        plain_message = strip_tags(html_message)
+        from_email = settings.EMAIL_HOST_USER
+        to = self.email
+        try:
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            return True
+        except Exception as e:
+            print(e)
+            return False
