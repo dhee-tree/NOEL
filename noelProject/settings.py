@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Auth',
     'Profile',
     'Group',
+    'Mail',
 ]
 
 MIDDLEWARE = [
