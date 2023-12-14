@@ -22,11 +22,12 @@ class GetUserProfile():
         else:
             return 'good'
 
-    def update_profile(self, gender):
+    def update_profile(self, gender, address):
         """Updates the user profile of the loggedin user"""
         try:
             profile = UserProfile.objects.get(user=self.user)
             profile.gender=gender
+            profile.address=address
             profile.save()
             return True
         except ObjectDoesNotExist:

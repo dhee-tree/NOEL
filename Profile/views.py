@@ -68,7 +68,7 @@ class UpdateProfileView(LoginRequiredMixin, View):
             request.user.last_name = request.POST.get('last_name')
             request.user.save()
             user_profile = GetUserProfile(request.user)
-            user_profile.update_profile(request.POST.get('gender'))
+            user_profile.update_profile(request.POST.get('gender'), request.POST.get('address'))
             messages.success(request, 'You have successfully updated your profile.')
             return redirect('home')
         else:
