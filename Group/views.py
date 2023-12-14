@@ -158,15 +158,31 @@ class UnwrappedView(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.error(request, 'Group does not exist.')
             return redirect('group_home')
-        
-        context = {
-            'picked': group_profile.get_picked(group),
-            'group': group,
-            'user_profile': user_profile.get_profile(),
-            'picked_address': group_profile.get_picked_address(group),
-            'picked_email': group_profile.get_picked_email(group),
-            }
-        return render(request, self.template_name, context)
+
+        if not group_profile.get_wrapped(group):
+            if group_profile.get_group_members_list(group) == []:
+                messages.error(request, 'You are the only one on this group, invite your friends.')
+                return redirect('group_view', group_name=group_name)
+            else:
+                if not group_profile.get_is_open(group):
+                    if group_profile.check_pick(group):
+                        context = {
+                            'user_profile': user_profile.get_profile(),
+                            'group': group,
+                            'picked': group_profile.get_picked(group),
+                            'picked_address': group_profile.get_picked_address(group),
+                            'picked_email': group_profile.get_picked_email(group),
+                        }
+                        return render(request, self.template_name, context)
+                    else:
+                        messages.error(request, f'You have not picked a user for {group}.')
+                        return redirect('group_home')
+                else:
+                    messages.error(request, f'You cannot open your wrapped for {group}, it is still open.')
+                    return redirect('group_view', group_name=group_name)
+        else:
+            messages.error(request, f'You have not opened your wrap for {group}.')
+            return redirect('group_home')
 
     def post(self, request, group_name):
         user_profile = GetUserProfile(request.user)
