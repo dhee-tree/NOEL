@@ -1,3 +1,4 @@
+import random
 from .forms import createGroup
 from .utils import GroupManager
 from django.contrib import messages
@@ -176,6 +177,9 @@ class UnwrappedView(LoginRequiredMixin, View):
             return redirect('group_home')
 
         list_of_members = group_profile.get_group_members_list(group)
+        random.shuffle(list_of_members)
+        random.shuffle(list_of_members)
+        random.shuffle(list_of_members)
         picked = request.POST.get('pick')
         if picked == None:
             messages.error(request, 'You did not pick a user.')
