@@ -66,12 +66,13 @@ class RegisterView(View):
             first_name = post_form.cleaned_data.get('first_name')
             last_name = post_form.cleaned_data.get('last_name')
             gender = post_form.cleaned_data.get('gender')
+            address = post_form.cleaned_data.get('address')
             try:
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
                 user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
                 user.save()
-                user_profile = UserProfile.objects.create(user=user, gender=gender)
+                user_profile = UserProfile.objects.create(user=user, address=address, gender=gender)
                 user_profile.save()
                 login(request, user)
                 return redirect('home')
