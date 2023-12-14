@@ -1,8 +1,10 @@
 from django.views import View
+from Mail.utils import MailManager
 from django.contrib import messages
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from .utils import VerificationManager
 from Profile.models import UserProfile
 from Profile.views import GetUserProfile
 from django.contrib.auth.models import User
@@ -11,8 +13,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .utils import VerificationManager
-from Mail.utils import MailManager
 
 # Create your views here.
 class LoginView(View):
@@ -133,3 +133,51 @@ class ChangePasswordView(LoginRequiredMixin, View):
                 'password_form': post_form,
             }
             return render(request, self.template_name, context)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class VerifyEmailView(LoginRequiredMixin, View):
+    template_name = 'auth/verify-email.html'
+    form = None
+
+    def get(self, request):
+        token = request.GET.get('token')
+        user_profile = UserProfile.objects.get(user=request.user)
+        verification_manager = VerificationManager(user_profile)
+        if token:
+            if verification_manager.check_user_verified():
+                messages.error(request, 'You have already verified your account.')
+                return redirect('home')
+            else:
+                if verification_manager.verify_user(token):
+                    messages.success(request, 'You have successfully verified your account.')
+                    return redirect('home')
+                else:
+                    messages.error(request, 'Invalid verification code.')
+                    return redirect('verify_email')
+        else:
+            if verification_manager.check_user_verified():
+                messages.error(request, 'You have already verified your account.')
+                return redirect('home')
+            else:
+                if request.user.is_staff:
+                    messages.error(request, 'You are not allowed to verify your account. Admins do not have a profile.')
+                    return redirect('admin:index')
+                else:
+                    context = {'form': self.form}
+                    return render(request, self.template_name, context)
+
+    def post(self, request):
+        post_form = self.form(request.POST)
+        if post_form.is_valid():
+            verification_code = post_form.cleaned_data.get('code')
+            user_profile = UserProfile.objects.get(user=request.user)
+            verification_manager = VerificationManager(user_profile)
+            if verification_manager.verify_user(verification_code):
+                messages.success(request, 'You have successfully verified your account.')
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid verification code.')
+                return redirect('verify_email')
+        else:
+            return render(request, self.template_name, {'form': post_form, 'formError': True})
