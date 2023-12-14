@@ -11,7 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, CreateView, ListView, View, DeleteView
+from django.views.generic import TemplateView, ListView, View, DeleteView
+from Auth.utils import VerificationManager
 
 # Create your views here.
 @method_decorator(csrf_protect, name='dispatch')
@@ -41,21 +42,30 @@ class HomeView(LoginRequiredMixin, View):
 
 
 @method_decorator(csrf_protect, name='dispatch')
-class CreateGroupView(LoginRequiredMixin, CreateView):
-    model = SantaGroup
-    form_class = createGroup
+class CreateGroupView(LoginRequiredMixin, View):
+    form = None
     template_name = 'group/create.html'
-    success_url = '/group/home/'
 
-    def form_valid(self, group):
-        user_profile = GetUserProfile(self.request.user)
+    def get(self, request):
+        verified = VerificationManager(GetUserProfile(request.user).get_profile()).check_user_verified()
+        if verified:
+            context = {
+                'form': self.form,
+            }
+            return render(request, self.template_name, context)
+        else:
+            messages.error(request, 'You need to verify your account to create a group.')
+            return redirect('home')
+
+    def post(self, request):
+        group_name = request.POST.get('group_name')
         group_manager = GroupManager(self.request.user)
-        group.save()
-        group_manager.create_group(group.instance)
-        group.instance.created_by = user_profile.get_profile()
-        group.instance.save()
-
-        return super().form_valid(group)
+        if group_manager.create_group(group_name):
+            messages.success(request, 'Group created successfully!')
+            return redirect('group_home')
+        else:
+            messages.error(request, f'{group_name} already exists.')
+            return redirect('group_create')
 
 
 @method_decorator(csrf_protect, name='dispatch')
