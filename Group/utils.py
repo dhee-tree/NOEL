@@ -43,8 +43,11 @@ class GroupManager():
         """Adds the loggedin user to a group"""
         try:
             group = SantaGroup.objects.get(group_code=group_code)
-            GroupMember.objects.create(group_id=group, user_profile_id=self.user.userprofile)
-            return True
+            if not self.get_is_open(group):
+                return False
+            else:
+                GroupMember.objects.create(group_id=group, user_profile_id=self.user.userprofile)
+                return True
         except ObjectDoesNotExist:
             return False
         except IntegrityError:
