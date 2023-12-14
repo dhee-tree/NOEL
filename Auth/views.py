@@ -11,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .utils import VerificationManager
+from Mail.utils import MailManager
 
 # Create your views here.
 class LoginView(View):
@@ -73,8 +75,12 @@ class RegisterView(View):
                 user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
                 user.save()
                 user_profile = UserProfile.objects.create(user=user, address=address, gender=gender)
+                verification_code = VerificationManager(user_profile).generate_verification_code()
+                user_profile.verification_code = verification_code
                 user_profile.save()
                 login(request, user)
+                MailManager(email).send_verification_email(first_name, verification_code)
+                messages.success(request, 'You have successfully registered. Please verify your account.')
                 return redirect('home')
             else:
                 context = {'form': post_form, 'registerError': True}
