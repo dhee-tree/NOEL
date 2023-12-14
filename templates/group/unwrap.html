@@ -18,6 +18,9 @@
 
                 <p>For {{ group.group_name }}, you picked: {{ picked }}</p>
 
+                <p>Here is their address so you can send their gift:</p>
+                <p>{{ picked_address }}</p>
+
                 <a href="{% url 'group_view' group_name=group.group_name %}" class="btn btn-wrap" id="unwrapped">Go Back</a>
             </div>
         </div>
