@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" id="code_form">
+                <form method="post" id="code_form" action="{% url 'group_join' %}">
                     {% csrf_token %}
                     <label for="group_code">Enter Group Code:</label>
                     <input type="text" name="group_code" id="group_code" maxlength="6" required>
