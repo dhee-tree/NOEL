@@ -8,14 +8,15 @@ class UserProfile(models.Model):
     gender_choices = (
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Non-binary', 'Non-binary'),
+        ('Prefer not to say', 'Prefer not to say'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50, blank=True)
-    gender = models.CharField(max_length=11, choices=gender_choices, blank=True)
+    gender = models.CharField(max_length=50, choices=gender_choices, blank=True)
     address = models.CharField(max_length=200, blank=True)
     profile_pic = models.CharField(max_length=200, blank=True)    
-    password_changed = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, default='')
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
 
