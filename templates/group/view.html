@@ -67,7 +67,7 @@
                 {% endif %}
 
                 {% if group_owner %}
-                <hr>
+                    <hr>
                     <!-- Group settings modal trigger -->
                     <p class="text-info group-settings">As owner you can make changes here.</p>
                     <!-- Group status trigger -->
@@ -78,9 +78,9 @@
                     <i class="fa-solid fa-pen btn btn-primary owner-settings" data-bs-toggle="modal" data-bs-target="#editModal"></i>
 
                     <!-- Modals -->
-                    {% include "utils/modal.html" %}
                 {% endif %}
-
+                    
+                {% include "utils/modal.html" %}
             </div>
         </div>
     </div>
