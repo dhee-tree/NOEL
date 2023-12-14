@@ -7,7 +7,7 @@ class SantaGroup(models.Model):
     group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     group_name = models.CharField(max_length=50, unique=True)
     group_code = models.CharField(max_length=6, unique=True, default='')
-    is_open = models.BooleanField(default=False)
+    is_open = models.BooleanField(default=True)
     created_by = models.ForeignKey('Profile.UserProfile', on_delete=models.SET_NULL, null=True)
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
