@@ -121,7 +121,7 @@ class WrappedView(LoginRequiredMixin, View):
                 messages.error(request, 'You are the only one on this group, invite your friends.')
                 return redirect('group_view', group_name=group_name)
             else:
-                if group_profile.get_is_open(group):
+                if not group_profile.get_is_open(group):
                     if group_profile.check_pick(group):
                         messages.error(request, f'You already picked a user for {group}.')
                         return redirect('group_home')
@@ -135,7 +135,7 @@ class WrappedView(LoginRequiredMixin, View):
                         }
                         return render(request, self.template_name, context)
                 else:
-                    messages.error(request, f'You cannot open your wrapped for {group}, it is closed.')
+                    messages.error(request, f'You cannot open your wrapped for {group}, it is still open.')
                     return redirect('group_view', group_name=group_name)
         else:
             messages.error(request, f'You have already opened your for {group}.')
@@ -186,7 +186,7 @@ class UnwrappedView(LoginRequiredMixin, View):
             messages.error(request, 'You did not pick a user.')
             return redirect('group_view', group_name=group_name)
         else:
-            if group_profile.get_is_open(group):
+            if not group_profile.get_is_open(group):
                 if group_profile.check_pick(group):
                     messages.error(request, 'You already picked a user.')
                     group_member = GroupMember.objects.get(group_id=group, user_profile_id=user_profile.get_profile())
@@ -203,7 +203,7 @@ class UnwrappedView(LoginRequiredMixin, View):
                     messages.success(request, f'You have successfully picked {participant_picked} for {group}.')
                     return redirect('group_view', group_name=group_name)
             else:
-                messages.error(request, f'You cannot pick a user for {group}, it is closed.')
+                messages.error(request, f'You cannot pick a user for {group}, it is open.')
                 return redirect('group_view', group_name=group_name)
 
 
