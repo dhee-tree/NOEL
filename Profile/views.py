@@ -1,9 +1,10 @@
 from django.views import View
 from .utils import GetUserProfile
-from Group.utils import GroupManager
 from django.shortcuts import render
 from django.contrib import messages
+from Group.utils import GroupManager
 from django.shortcuts import redirect
+from Auth.utils import VerificationManager
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -24,6 +25,7 @@ class HomeView(LoginRequiredMixin, View):
                 'user_profile': user_profile.get_profile(), 
                 'santa_greet': user_profile.get_santa_greet(),
                 'user_group_count': group_profile.user_group().count(),
+                'verified': VerificationManager(user_profile.get_profile()).check_user_verified(),
             }
             return render(request, self.template_name, context)
         
