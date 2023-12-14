@@ -28,22 +28,6 @@ class HomeView(LoginRequiredMixin, View):
                 'verified': VerificationManager(user_profile.get_profile()).check_user_verified(),
             }
             return render(request, self.template_name, context)
-        
-    def post(self, request):
-        group_code = request.POST.get('group_code').upper()
-        group_profile = GroupManager(request.user)
-        if group_profile.check_group_code(group_code):
-            if group_profile.join_group(group_code):
-                messages.success(
-                    request, 'You have successfully joined the group.')
-                return redirect('home')
-            else:
-                messages.error(
-                    request, 'You are already a member of this group.')
-                return redirect('home')
-        else:
-            messages.error(request, 'Invalid group code.')
-            return redirect('home')
 
 
 @method_decorator(csrf_protect, name='dispatch')
