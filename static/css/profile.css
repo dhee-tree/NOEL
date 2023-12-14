@@ -19,7 +19,7 @@
     margin-top: 2rem;
 }
 
-.btn-group-create, .btn-group-join, .btn-view-group, .btn-edit-profile, .btn-wrap, #unwrapped {
+.btn-group-create, .btn-view-group, .btn-edit-profile, .btn-wrap, #unwrapped {
     width: 40%;
 }
 
@@ -41,16 +41,6 @@
 
 .btn-group-create:hover {
     background-color: var(--secondary-color);
-    opacity: 0.8;
-    color: white;
-}
-
-.btn-group-join {
-    background-color:aqua;
-}
-
-.btn-group-join:hover {
-    background-color: aqua;
     opacity: 0.8;
     color: white;
 }
