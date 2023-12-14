@@ -19,7 +19,6 @@
                 <a href="{% url 'group_invite' group_name=group %}">Invite friends</a>
                 <hr>
                 
-                <p>Hi, {{ user_profile.user.first_name }} </p>
                 {% if members.count == 0 %}
                     <p>There are no members in this group yet!</p>
                 {% else %}
@@ -33,6 +32,8 @@
                         {% endif %}
                     {% endfor %}
                 {% endif %}
+
+                <hr>
 
                 {% if wrapped %}
                     <p>You have not yet opened your wrap</p>
