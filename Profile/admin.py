@@ -3,7 +3,7 @@ from .models import UserProfile
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'gender', 'profile_pic', 'password_changed', 'date_created', 'date_updated')
+    list_display = ('full_name', 'address', 'gender', 'profile_pic', 'password_changed', 'date_created', 'date_updated')
     list_filter = ('gender',)
 
 

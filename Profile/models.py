@@ -13,6 +13,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=11, choices=gender_choices, blank=True)
+    address = models.CharField(max_length=200, blank=True)
     profile_pic = models.CharField(max_length=200, blank=True)    
     password_changed = models.BooleanField(default=False)
     date_created = models.DateField(default=date.today)
