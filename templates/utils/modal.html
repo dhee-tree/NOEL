@@ -82,3 +82,35 @@
         </div>
     </div>
 </div>
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="statusModal">Editing {{ group }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="code_form" action="{% url 'group_status' group_name=group %}">
+                    {% csrf_token %}
+                    <p>{{ group }} is currently {% if is_open %}open{% else %}closed{% endif %}</p>
+                    
+                    <div class="d-block">
+                        <input type="radio" name="group_status" value="True" id="group_status_0" required>
+                        <label for="group_status_0">Open</label>
+                    </div>
+
+                    <div class="d-block">
+                        <input type="radio" name="group_status" value="False" id="group_status_1" required>
+                        <label for="group_status_1">Close</label>
+                    </div>
+
+                    <hr>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
