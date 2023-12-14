@@ -30,7 +30,31 @@
 
                 <form action="" method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                        <p>
+                            {{ form.first_name.label_tag }}
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name" value="{{user_profile.user.first_name}}">
+                        </p>
+
+                        <p>
+                            {{ form.last_name.label_tag }}
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter last name" value="{{user_profile.user.last_name}}">
+                        </p>
+                        <p>
+                            {{ form.address.label_tag }}
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Enter address" value="{{user_profile.address}}">
+                        </p>
+                        <p>
+                            {{ form.gender.label_tag }}
+                            <select name="gender" class="form-control" id="gender">
+                                <option value="{{user_profile.gender}}" selected>{{user_profile.gender}}</option>
+                                <hr>
+                                <option value="Male">Male</option>
+
+                                <option value="Female">Female</option>
+
+                                <option value="Non-binary">Non-binary</option>
+                            </select>
+                        </p>
 
                     <button type="submit" class="btn btn-edit-profile">Update</button>
                 </form>
