@@ -78,3 +78,18 @@
     list-style-type: none;
     font-size: 1rem;
 }
+
+/* Modifing group */
+.leave a {
+    background-color: var(--text-color);
+    color: rgb(3, 3, 3);
+    text-decoration: none;
+}
+
+#group_name {
+    margin: 10px 0
+}
+
+.owner-settings {
+    margin: 0 10px;
+}

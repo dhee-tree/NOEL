@@ -69,11 +69,12 @@
                 <hr>
                     <!-- Group settings modal trigger -->
                     <p class="text-info group-settings">As owner you can make changes here.</p>
-                    <i class="fa-solid fa-gear btn btn-warning" data-bs-toggle="modal" data-bs-target="#settingModal"></i>
+                    <!-- Group status trigger -->
+                    <i class="fa-solid fa-gear btn btn-warning owner-settings" data-bs-toggle="modal" data-bs-target="#statusModal"></i>
                     <!-- Group delete trigger -->
-                    <i class="fa-solid fa-trash-can btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+                    <i class="fa-solid fa-trash-can btn btn-danger owner-settings" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                     <!-- Group edit trigger -->
-                    <i class="fa-solid fa-pen btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>
+                    <i class="fa-solid fa-pen btn btn-primary owner-settings" data-bs-toggle="modal" data-bs-target="#editModal"></i>
 
                     <!-- Modals -->
                     {% include "utils/modal.html" %}

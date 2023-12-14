@@ -245,6 +245,26 @@ class EditGroupView(LoginRequiredMixin, View):
             return redirect('group_home')
 
 
+@method_decorator(csrf_protect, name='dispatch')
+class EditGroupStatusView(LoginRequiredMixin, View):
+    def post(self, request, group_name):
+        user_profile = GetUserProfile(request.user)
+        group_profile = GroupManager(request.user)
+        group = SantaGroup.objects.get(group_name=group_name)
+
+        if group_profile.check_group_creator(group):
+            group_status = request.POST.get('group_status')
+            group_profile.set_is_open(group, group_status)
+            if group_status == 'True':
+                messages.success(request, f'{group} is now open.')
+            else:
+                messages.success(request, f'{group} is now closed.')
+            return redirect('group_view', group_name=group_name)
+        else:
+            messages.error(request, f'You are not the owner {group}.')
+            return redirect('group_home')
+
+
 class DeleteGroupView(LoginRequiredMixin, DeletionMixin, View):
     model = SantaGroup
     template_name = 'group/delete.html'
