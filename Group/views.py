@@ -25,7 +25,7 @@ class HomeView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request):
-        group_code = request.POST.get('group_code')
+        group_code = request.POST.get('group_code').upper()
         group_profile = GroupManager(request.user)
         if group_profile.check_group_code(group_code):
             if group_profile.join_group(group_code):
