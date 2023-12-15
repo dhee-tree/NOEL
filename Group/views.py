@@ -352,19 +352,11 @@ class InviteFriendsView(LoginRequiredMixin, View):
 
         try:
             group = SantaGroup.objects.get(group_name=group_name)
-        except ObjectDoesNotExist:
-            messages.error(request, 'Group does not exist.')
-            return redirect('group_home')
-
-        if group_profile.check_group_creator(group):
             context = {
                 'group': group,
                 'user_profile': user_profile.get_profile(),
             }
             return render(request, self.template_name, context)
-        else:
-            messages.error(request, f'You are not the owner {group}.')
+        except ObjectDoesNotExist:
+            messages.error(request, 'Group does not exist.')
             return redirect('group_home')
-
-    def post(self, request, group_name):
-        pass
