@@ -1,0 +1,83 @@
+.greet {
+    margin-bottom: 50px;
+    display: flex;
+}
+
+.greet-text {
+    margin: auto 0;
+}
+
+.svg {
+    height: 80px;
+    float: left;
+    margin-right: 10px;
+}
+
+.btn-group-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.btn-group-create, .btn-view-group, .btn-edit-profile, .btn-wrap, #unwrapped {
+    width: 40%;
+}
+
+.btn-edit-profile {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-edit-profile:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
+
+.btn-group-create {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-group-create:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
+
+/* For Modal */
+#group_code {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 15px;
+}
+
+#loading {
+    color: var(--secondary-color);
+    display: none;
+}
+
+.btn-wrap {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-view-group {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-view-group:hover {
+    background-color: var(--primary-color);
+    opacity: 0.8;
+    color: white;
+}
+
+.btn-wrap:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.8;
+    color: white;
+}
