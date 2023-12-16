@@ -1,0 +1,11 @@
+.sub {
+    padding-left: 20px;
+}
+
+#contact-form {
+    margin-top: 40px;
+}
+
+textarea {
+    resize: none;
+}
