@@ -1,0 +1,94 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - FAQs{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/faq.css' %}" />
+{% endblock %}
+
+{% block main %}   
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center">FAQs</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="collapsible">How does it work?</button>
+                <div class="content">
+                    <p>NOEL allows you to create a group and invite your family and friends to join. Once everyone has joined, you can close the group which will allow the other members to pick a wrapped gift box. Once anyone picks a gift box they will be assigned a person to buy a gift for. Once everyone has picked a gift box.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I join?</button>
+                <div class="content">
+                    <p>You can join by clicking <a href="https://noel.ighomena.me/auth/register/" target="_blank">register</a>. Once you have registered, you can create a group and invite your family and friends to join or join an existing group.</p> 
+                </div>
+
+                <button type="button" class="collapsible">How do I create a group?</button>
+                <div class="content">
+                    <p>Once you have registered, you can create a group by clicking the create group button. You will then be able to invite your family and friends to join your group.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I invite people to my group?</button>
+                <div class="content">
+                    <p>Once you have created a group, you can invite people to join by clicking the invite button on the group page or copy the group invite code. You then need to share the code with your family and friends to join your group.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I join a group?</button>
+                <div class="content">
+                    <p>You can join a group by clicking the join group button on the group page and entering the group invite code.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I see who I have to buy a gift for?</button>
+                <div class="content">
+                    <p>Once the Secret Santa group is closed, you will be able to pick a wrapped gift box to reveal who you have to buy a gift for.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I see who has to buy a gift for me?</button>
+                <div class="content">
+                    <p>You are not able to see who has to buy a gift for you. This is to keep the secret in Secret Santa.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I send a gift?</button>
+                <div class="content">
+                    <p>Once you have picked your gift box, you will be able to see the address of the person you have to buy a gift for. You can then send the gift to the address provided.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I close a group?</button>
+                <div class="content">
+                    <p>Once everyone has joined your group, you can close the group by clicking the close group button on the group page. This will allow the other members to pick a wrapped gift box.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I delete a group?</button>
+                <div class="content">
+                    <p>You can delete a group by clicking the delete group button on the group page. This will delete the group and all the data such as group members and any related matches associated with the group.</p>
+                </div>
+
+                <button type="button" class="collapsible">How do I leave a group?</button>
+                <div class="content">
+                    <p>You can leave a group by clicking the leave group button on the group page. This will remove you from the group and any related matches associated with the group.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        } 
+      });
+    }
+</script>
+{% endblock %}
