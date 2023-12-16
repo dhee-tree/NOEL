@@ -67,9 +67,9 @@
 						<a class="side-item" href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
 						<a class="side-item" href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Register</a>
 						<hr>
-						<a class="side-item" href="#"><i class="fa-solid fa-book"></i> About Us</a>
-						<a class="side-item" href="#"><i class="fa-solid fa-question"></i> FAQs</a>
-						<a class="side-item" href="#"><i class="fa-solid fa-envelope"></i> Reach Us</a>
+						<a class="side-item" href="{% url 'about' %}"><i class="fa-solid fa-book"></i> About Us</a>
+						<a class="side-item" href="{% url 'faq' %}"><i class="fa-solid fa-question"></i> FAQs</a>
+						<a class="side-item" href="{% url 'contact' %}"><i class="fa-solid fa-envelope"></i> Reach Us</a>
 					{% endif %}
 				</div>
 			</div>
@@ -94,9 +94,9 @@
 					<h5>Sitemap</h5>
 					<ul class="nav flex-column">
 						<li class="nav-item mb-2"><a href="{% url 'index' %}" class="nav-link p-0 text-body-secondary">Home</a></li>
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">About</a></li>
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">FAQs</a></li>
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Reach Us</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'about' %}" class="nav-link p-0 text-body-secondary">About</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'faq' %}" class="nav-link p-0 text-body-secondary">FAQs</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'contact' %}" class="nav-link p-0 text-body-secondary">Reach Us</a></li>
 					</ul>
 				</div>
 
@@ -105,8 +105,8 @@
 				<div class="col mb-3">
 					<h5>Legal</h5>
 					<ul class="nav flex-column">
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Privacy</a></li>
-						<li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Terms and Conditions</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'privacy' %}" class="nav-link p-0 text-body-secondary">Privacy</a></li>
+						<li class="nav-item mb-2"><a href="{% url 'terms' %}" class="nav-link p-0 text-body-secondary">Terms and Conditions</a></li>
 					</ul>
 				</div>
   			</footer>
