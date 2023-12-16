@@ -22,6 +22,7 @@
                             <a href="{% url 'login' %}">Login instead</a> <br>
                         {% endif %}
                         
+                        <p class="text-info">Password must contain 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number.</p>
                         {{ form.password.label_tag }}
                         {{ form.password }}
 
