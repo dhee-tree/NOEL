@@ -39,7 +39,7 @@
                         
                         {{ form.gender.label_tag }}
                         {{ form.gender }}
-                        <p>By clicking Register you accept our <a href="#">Terms and conditions</a></p>
+                        <p>By clicking Register you accept our <a href="{% url 'terms' %}">Terms and conditions</a></p>
                         <button type="submit" class="auth-btn">Register</button>
                     </form>
                     
