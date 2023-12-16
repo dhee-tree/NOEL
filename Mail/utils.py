@@ -1,9 +1,9 @@
 from django.conf import settings
-from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
+from decouple import config
 
 
 class MailManager():
@@ -33,6 +33,20 @@ class MailManager():
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER
         to = self.email
+        try:
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+        
+    def send_contact_message(self, name, message):
+        """Sends an email to the admin with a contact message"""
+        subject = 'Contact message from {}'.format(name)
+        html_message = render_to_string('mail/contact_message.html', {'name': name, 'message': message, 'email': self.email})
+        plain_message = strip_tags(html_message)
+        from_email = settings.EMAIL_HOST_USER
+        to = config('ADMIN_EMAIL')
         try:
             send_mail(subject, plain_message, from_email, [to], html_message=html_message)
             return True
