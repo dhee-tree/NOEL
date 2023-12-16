@@ -88,6 +88,7 @@ body {
 main {
     min-height: 100vh;
     margin-top: .5rem;
+    margin-bottom: 2rem;
 }
 
 /* FOOTER */
