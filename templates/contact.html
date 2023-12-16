@@ -1,0 +1,53 @@
+{% extends "utils/base.html" %}
+{% block title %}NOEL - Contact Us{% endblock %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/info.css' %}" />
+{% endblock %}
+
+{% block main %}   
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center">Contact Us</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6 text-center">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
+                            {% else %}
+                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
+                            {% endif %}
+                            
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form method="post" id="contact-form">
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Oops!</strong> Something went wrong. Please try again.
+                        </div>
+                    {% endif %}
+
+                    {% if form.success %}
+                        <div class="alert alert-success" role="alert">
+                            <strong>Success!</strong> Your message has been sent.
+                        </div>
+                    {% endif %}
+
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+{% endblock %}
