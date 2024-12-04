@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'PT Serif', serif;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 10px;
+            border: 5px solid #B31312;
+            overflow: hidden;
+            text-align: center;
+            background-color: #FFF;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #B31312;
+            color: white;
+            padding: 15px 10px;
+        }
+
+        .header h1 {
+            font-family: 'Berkshire Swash', cursive;
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .body h2 {
+            font-family: 'Mountains of Christmas', cursive;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #2B2A4C;
+        }
+
+        .body p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .body a {
+            color: #B31312;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .body a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: #2B2A4C;
+            color: white;
+            padding: 10px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>NOEL</h1>
+        </div>
+
+        <div class="body">
+            {% block body %}{% endblock %}
+
+            <br><span>
+                {% block greeting %}{% endblock %}
+            </span><br>
+            <span>
+                {% block sender %}{% endblock %}
+            </span>
+        </div>
+
+        <div class="footer">
+            &copy; {% now "Y" %} noel.ighomena.me
+        </div>
+    </div>
+</body>
+
+</html>

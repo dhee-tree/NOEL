@@ -1,3 +1,8 @@
+{% extends "mail/mail-base.html" %}
+{% block title %}NOEL - Verify Email{% endblock %}
+
+{% block body %}
+
 <h1>NOEL</h1>
 
 <h2>Complements {{ first_name }},</h2>
@@ -9,5 +14,7 @@ Your verification code is: <b>{{ verification_code }}</b>
 Copy and paste the code in the <a href="https://noel.ighomena.me/auth/verify-email/">Verification page</a> or click the link below to verify your email.
 <p>Please <a href="https://noel.ighomena.me/auth/verify-email/?token={{ verification_code }}">Verify your email here</a></p>
 
-<span>Thanks,</span> <br>
-<span>Prancer</span>
+{% endblock %}
+
+{% block greeting %}Thanks,{% endblock %}
+{% block sender %}Dancer{% endblock %}

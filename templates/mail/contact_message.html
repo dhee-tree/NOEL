@@ -1,4 +1,10 @@
 <!-- Email to admin about message from contact form -->
+
+{% extends "mail/mail-base.html" %}
+{% block title %}NOEL - Contact Form{% endblock %}
+
+{% block body %}
+
 <h1>NOEL</h1>
 
 <h2>Hi Dhee,</h2>
@@ -9,5 +15,7 @@
 
 <p>Message: {{ message }}</p>
 
-<span>Thanks,</span> <br>
-<span>Dancer</span>
+{% endblock %}
+
+{% block greeting %}Thanks,{% endblock %}
+{% block sender %}Dancer{% endblock %}

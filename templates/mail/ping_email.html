@@ -1,4 +1,9 @@
 <!-- Email to ping group member to add their email -->
+
+{% extends "mail/mail-base.html" %}
+{% block title %}NOEL - Ping User{% endblock %}
+
+{% block body %}
 <h1>NOEL</h1>
 <h2>Hi {{ user.first_name }},</h2>
 
@@ -7,5 +12,7 @@
 
 <p>Please <a href="https://noel.ighomena.me/user/update-profile/">Update you address here</a></p>
 
-<span>Thanks,</span> <br>
-<span>Dancer</span>
+{% endblock %}
+
+{% block greeting %}Thanks,{% endblock %}
+{% block sender %}Dancer{% endblock %}
