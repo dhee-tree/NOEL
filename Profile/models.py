@@ -10,13 +10,14 @@ class UserProfile(models.Model):
         ('Female', 'Female'),
         ('Prefer not to say', 'Prefer not to say'),
     )
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=50, choices=gender_choices, blank=True)
     address = models.CharField(max_length=200, blank=True)
     profile_pic = models.CharField(max_length=200, blank=True)    
     is_verified = models.BooleanField(default=False)
-    verification_code = models.CharField(max_length=6, blank=True, default='')
+    verification_code = models.CharField(max_length=8, blank=True, default='')
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
 
