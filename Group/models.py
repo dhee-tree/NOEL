@@ -11,6 +11,7 @@ class SantaGroup(models.Model):
     created_by = models.ForeignKey('Profile.UserProfile', on_delete=models.SET_NULL, null=True)
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.group_name
@@ -22,6 +23,7 @@ class Pick(models.Model):
     picked_by = models.CharField(max_length=255, blank=False)
     group_id = models.ForeignKey(SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
     date_picked = models.DateField(default=date.today)
+    is_archived = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('full_name', 'group_id')
@@ -36,6 +38,7 @@ class GroupMember(models.Model):
     is_wrapped = models.BooleanField(default=True)
     date_created = models.DateField(default=date.today)
     date_updated = models.DateField(default=date.today)
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.group_id.group_name + ' - ' + self.user_profile_id.user.username

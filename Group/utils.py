@@ -28,7 +28,7 @@ class GroupManager():
     def user_group(self):
         """Returns the group of any user"""
         try:
-            return GroupMember.objects.filter(user_profile_id=self.user.userprofile)
+            return GroupMember.objects.filter(user_profile_id=self.user.userprofile, group_id__is_archived=False)
         except ObjectDoesNotExist:
             return None
 
@@ -44,6 +44,8 @@ class GroupManager():
         try:
             group = SantaGroup.objects.get(group_code=group_code)
             if not self.get_is_open(group):
+                return False
+            if group.is_archived:
                 return False
             else:
                 GroupMember.objects.create(group_id=group, user_profile_id=self.user.userprofile)
