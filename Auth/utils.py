@@ -8,7 +8,7 @@ class VerificationManager():
 
     def generate_verification_code(self):
         """Generates verification code for a user"""
-        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+        return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
     def verify_user(self, verification_code):
         """Verifies the user"""
@@ -25,11 +25,8 @@ class VerificationManager():
     def check_user_verified(self):
         """Checks if the user is verified"""
         return self.profile.is_verified
-
-# class VerificationTokenGenerator(PasswordResetTokenGenerator):
-#     def _make_hash_value(self, user, timestamp):
-#         return (
-#             six.text_type(user.pk) + six.text_type(timestamp) +
-#             six.text_type(user.is_active)
-#         )
-# account_activation_token = VerificationTokenGenerator()
+    
+    def reset_verification_status(self):
+        self.profile.is_verified = False
+        self.profile.save()
+        return True
