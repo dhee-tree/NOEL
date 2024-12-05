@@ -53,3 +53,33 @@ class MailManager():
         except Exception as e:
             print(e)
             return False
+        
+    
+    def send_reset_password_email(self, name, uuid, verification_code):
+        """Sends an email to reset a user's password"""
+        subject = 'Reset your password'
+        html_message = render_to_string('mail/reset_password.html', {'name': name, 'uuid': uuid, 'verification_code': verification_code})
+        plain_message = strip_tags(html_message)
+        from_email = settings.EMAIL_HOST_USER
+        to = self.email
+        try:
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+        
+    
+    def send_reset_password_confirm_email(self, name):
+        """Sends an email to confirm a user's password reset"""
+        subject = 'Password reset successful'
+        html_message = render_to_string('mail/reset_password_confirm.html', {'name': name})
+        plain_message = strip_tags(html_message)
+        from_email = settings.EMAIL_HOST_USER
+        to = self.email
+        try:
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            return True
+        except Exception as e:
+            print(e)
+            return False
