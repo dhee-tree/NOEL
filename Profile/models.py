@@ -27,3 +27,19 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+
+class WishListItem(models.Model):
+    item_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, blank=False)
+    link = models.CharField(max_length=255, blank=False)
+    date_created = models.DateField(default=date.today)
+    date_updated = models.DateField(default=date.today)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['date_created']
+        verbose_name_plural = 'Wish Lists Items'
