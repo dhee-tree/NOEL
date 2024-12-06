@@ -1,10 +1,15 @@
-import random, string
+import random
+import string
 from django.core.exceptions import ObjectDoesNotExist
 
 
 class VerificationManager():
     def __init__(self, profile):
         self.profile = profile
+
+    def get_user_verification_code(self):
+        """Returns the user's verification code"""
+        return self.profile.verification_code
 
     def generate_verification_code(self):
         """Generates verification code for a user"""
@@ -25,7 +30,7 @@ class VerificationManager():
     def check_user_verified(self):
         """Checks if the user is verified"""
         return self.profile.is_verified
-    
+
     def reset_verification_status(self):
         self.profile.is_verified = False
         self.profile.save()

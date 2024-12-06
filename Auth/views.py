@@ -2,7 +2,6 @@ from django.views import View
 from Mail.utils import MailManager
 from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from .utils import VerificationManager
 from Profile.models import UserProfile
@@ -240,7 +239,7 @@ class ResetPasswordView(View):
                     request, 'We have sent you an email with instructions to reset your password.')
                 return redirect('login')
         else:
-            return render(request, self.template_name, {'form': post_form, 'formError': True})
+            return render(request, self.template_name, {'form': post_form})
 
 
 @method_decorator(csrf_protect, name='dispatch')

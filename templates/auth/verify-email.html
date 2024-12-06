@@ -17,13 +17,17 @@
                 </div>
                 {% include "utils/errors/error-messages.html" %}
 
-                <div> 
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-success">Verify</button>
-                    </form>
-                </div>
+            </div>
+            <div class="col-12">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Verify</button>
+                </form>
+                <div class="resend-code mt-2">
+                    <span>Didn't receive the code?</span>
+                    <a href="{% url 'resend_code' %}">Resend Verification Code</a>
+                </div> 
             </div>
         </div>
     </div>
