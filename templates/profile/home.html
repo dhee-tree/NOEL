@@ -13,7 +13,7 @@
                 <div class="confirm-form"> 
                     <div class="greet">
                         <img src="{% static 'images/svg/santa.svg' %}" class="svg" alt="Greeting santa image">
-                        <p class="greet-text"><i class="fa-solid fa-quote-left fa-sm" style="color: #2b2a4c;"></i> Ho Ho Ho! {{ user_profile.user.first_name }}. I see you have been {{ santa_greet }}. <i class="fa-solid fa-quote-right fa-sm" style="color: #2b2a4c;"></i></p>
+                        <p class="greet-text"><i class="fa-solid fa-quote-left fa-sm" style="color: #2b2a4c;"></i>{{ santa_greet }}. <i class="fa-solid fa-quote-right fa-sm" style="color: #2b2a4c;"></i></p>
                     </div>
                     
                     {% if messages %}
@@ -42,17 +42,20 @@
                             <!-- Modal -->
                             {% include "utils/joinModal.html" %}
                         </div>
-                        <div class="btn-group-container">
+                        <div class="btn-group-container d-flex justify-content-between align-items-center flex-wrap">
                             <a href="{% url 'update_profile' %}" class="btn btn-edit-profile">Edit Profile</a>
-                            {% if not verified %}
+                            {% if verified %}
+                                <a href="{% url 'wishlist' %}" class="btn btn-view-group mb-3">My Wishlist</a>
+                            {% else %}
                                 <a href="{% url 'verify_email' %}" class="btn btn-view-group">Verify Email</a>
                             {% endif %}
                         </div>
                     {% else %}
                         <p>You are part of; <strong><u>{{ user_group_count }}</u></strong> {% if user_group_count > 1 %} groups {% else %} group {% endif %}</p>
-                        <div class="btn-group-container">
-                            <a href="{% url 'group_home' %}" class="btn btn-view-group">My Groups</a>
-                            <a href="{% url 'update_profile' %}" class="btn btn-edit-profile">Edit Profile</a>
+                        <div class="btn-group-container d-flex justify-content-between align-items-center flex-wrap">
+                            <a href="{% url 'group_home' %}" class="btn btn-view-group mb-3">My Groups</a>
+                            <a href="{% url 'wishlist' %}" class="btn btn-view-group mb-3">My Wishlist</a>
+                            <a href="{% url 'update_profile' %}" class="btn btn-edit-profile mb-3">Edit Profile</a>
                         </div>
                     {% endif %}
                     
