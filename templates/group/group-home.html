@@ -15,19 +15,7 @@
                     <img src="{% static 'images/svg/group.svg' %}" class="svg" alt="Greeting santa image">
                     <p class="greet-text">Here are your Secret Santa groups!</p>
                 </div>
-                
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            {% if message.tags == 'error' %}
-                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
-                            {% else %}
-                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
-                            {% endif %}
-                            
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                {% include "utils/errors/error-messages.html" %}
 
                 <ul class="group-list">
                     {% for group in groups %}

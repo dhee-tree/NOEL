@@ -1,0 +1,17 @@
+{% if messages %}
+<div class="mb-4">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                <i class="me-2 fa-solid fa-circle-xmark"></i>
+                <div>{{ message }}</div>
+            </div>
+        {% else %}
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="me-2 fa-solid fa-circle-check"></i>
+                <div>{{ message }}</div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}

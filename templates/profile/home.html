@@ -15,19 +15,7 @@
                         <img src="{% static 'images/svg/santa.svg' %}" class="svg" alt="Greeting santa image">
                         <p class="greet-text"><i class="fa-solid fa-quote-left fa-sm" style="color: #2b2a4c;"></i>{{ santa_greet }}. <i class="fa-solid fa-quote-right fa-sm" style="color: #2b2a4c;"></i></p>
                     </div>
-                    
-                    {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                                {% if message.tags == 'error' %}
-                                    <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
-                                {% else %}
-                                    <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
-                                {% endif %}
-                                
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                    {% include "utils/errors/error-messages.html" %}
 
                     {% if user_group_count == 0 %}
                     <p>You are not a member of any group yet!</p>

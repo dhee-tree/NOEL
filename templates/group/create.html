@@ -15,18 +15,8 @@
                     <img src="{% static 'images/svg/group-create.svg' %}" class="svg" alt="Creating group image">
                     <p class="greet-text">Creating Secret Santa Group</p>
                 </div>
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            {% if message.tags == 'error' %}
-                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
-                            {% else %}
-                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
-                            {% endif %}
-                            
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                {% include "utils/errors/error-messages.html" %}
+
                 <div> 
                     <form method="post">
                         {% csrf_token %}

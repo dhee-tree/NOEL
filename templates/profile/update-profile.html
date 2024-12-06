@@ -12,21 +12,9 @@
             <div class="col-12">
                 <div class="greet">
                     <img src="{% static 'images/svg/update_profile.svg' %}" class="svg" alt="Change Password image">
-                    <p class="greet-text">Updating Profile</p>
+                    <p class="greet-text">Update Profile</p>
                 </div>
-
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            {% if message.tags == 'error' %}
-                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
-                            {% else %}
-                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
-                            {% endif %}
-                            
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                {% include "utils/errors/error-messages.html" %}
 
                 <form action="" method="post">
                     {% csrf_token %}

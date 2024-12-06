@@ -52,19 +52,8 @@
                 <div class="leave mt-4">
                     <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#leaveModal">Leave Group</a>
                 </div>
+                {% include "utils/errors/error-messages.html" %}
 
-                {% if messages %}
-                    <ul class="messages mt-2">
-                        {% for message in messages %}
-                            {% if message.tags == 'error' %}
-                                <p class="text-danger"><i class="fa-solid fa-xmark"></i> {{ message }}</p>
-                            {% else %}
-                                <p class="text-success"><i class="fa-solid fa-check fa-fade"></i> {{ message }}</p>
-                            {% endif %}
-                            
-                        {% endfor %}
-                    </ul>
-                {% endif %}
 
                 {% if group_owner %}
                     <hr>
