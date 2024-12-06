@@ -61,8 +61,11 @@
 					<a class="side-item" href="/"><i class="fa-solid fa-house-user"></i> Home</a>
 					{% if user.is_authenticated %}
 						<a class="side-item" href="{% url 'group_home' %}"><i class="fa-solid fa-users"></i> My Groups</a>
-							<hr>
-						<a class="side-item"  href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+						<hr>
+						<form method="post" action="{% url 'logout' %}">
+							{% csrf_token %}
+							<button type="submit" class="side-item" style="border: none; background: none;"><i class="fa-solid fa-sign-out"></i> Logout</button>
+						</form>
 					{% else %}
 						<a class="side-item" href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
 						<a class="side-item" href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Register</a>
