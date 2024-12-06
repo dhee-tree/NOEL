@@ -18,7 +18,8 @@
                 <p>You have done it!</p>
 
                 <p>For {{ group.group_name }}, you picked: </p>
-                <p>{{ picked }}</p>
+                <span>{{ picked }} | </span> <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#viewWishlistModal">
+                    <i class="fa-solid fa-eye me-1"></i>View Wishlist</a>
                 <hr>
                 <p>Here is their address so you can send their gift:</p>
                 <p>{{ picked_address }}</p>
@@ -34,6 +35,7 @@
 
                 <a href="{% url 'group_view' group_name=group.group_name %}" class="btn btn-wrap" id="unwrapped">Go Back</a>
             </div>
+            {% include "utils/wishlist/view-wishlist-modal.html" %}
         </div>
     </div>
 {% endblock %}

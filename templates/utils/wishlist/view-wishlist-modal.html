@@ -1,0 +1,42 @@
+<!-- View User Wishlist -->
+<div class="modal fade" id="viewWishlistModal" tabindex="-1" aria-labelledby="viewWishlistModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="viewWishlistModalLabel">{{ picked }} Wishlist</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Item</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% if picked_wish_list|length > 0 %}
+                    {% for item in picked_wish_list %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            {% if item.link %}
+                            <a href="{{ item.link }}" target="_blank" class="text-decoration-none">Get Item</a>
+                            {% else %}
+                            <span class="text-muted">No link provided</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No items on this wishlist yet!</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

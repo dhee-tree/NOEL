@@ -16,7 +16,7 @@
                 <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #2B2A4C;">
                     <h2 class="h5 mb-0">My Wishlist</h2>
                     <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addItemModal">
-                        <i class="btn btn-light btn-sm fa-solid fa-plus me-1"></i>Add Item
+                        <i class="fa-solid fa-plus me-1"></i>Add Item
                     </button>
                 </div>
                 <div class="card-body p-4">
@@ -56,7 +56,7 @@
                                         </td>
                                     </tr>
 
-                                    {% include "utils/wishlist-modals.html" %}
+                                    {% include "utils/wishlist/wishlist-modals.html" %}
 
                                     {% endfor %}
                                 {% else %}
@@ -74,7 +74,7 @@
                 </div>
             </div>
         </div>
-        {% include "utils/add-wishlist-item-modal.html" %}
+        {% include "utils/wishlist/add-wishlist-item-modal.html" %}
     </div>
 </div>
 {% endblock %}
