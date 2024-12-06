@@ -31,16 +31,19 @@ class LoginView(View):
 
     def post(self, request):
         post_form = self.form(request.POST)
+        invalid_details_message = "Your email or password is incorrect. Please try again or reset your password."
         if post_form.is_valid():
-            username = post_form.cleaned_data.get('username')
+            username = post_form.cleaned_data.get('email').lower()
             password = post_form.cleaned_data.get('password')
             try:
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
-                return render(request, self.template_name, {'form': post_form, 'userError': True})
+                messages.error(request, invalid_details_message)
+                return render(request, self.template_name, {'form': post_form})
             else:
                 if not check_password(password, user.password):
-                    return render(request, self.template_name, {'form': post_form, 'passwordError': True})
+                    messages.error(request, invalid_details_message)
+                    return render(request, self.template_name, {'form': post_form})
                 else:
                     user = authenticate(
                         request, username=username, password=password)
@@ -49,7 +52,8 @@ class LoginView(View):
 
                     return redirect('home')
         else:
-            return render(request, self.template_name, {'form': post_form, 'formError': True})
+            messages.error(request, invalid_details_message)
+            return render(request, self.template_name, {'form': post_form})
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -67,9 +71,9 @@ class RegisterView(View):
     def post(self, request):
         post_form = self.form(request.POST)
         if post_form.is_valid():
-            username = post_form.cleaned_data.get('email')
+            username = post_form.cleaned_data.get('email').lower()
             password = post_form.cleaned_data.get('password')
-            email = post_form.cleaned_data.get('email')
+            email = post_form.cleaned_data.get('email').lower()
             first_name = post_form.cleaned_data.get('first_name')
             last_name = post_form.cleaned_data.get('last_name')
             gender = post_form.cleaned_data.get('gender')
@@ -217,7 +221,7 @@ class ResetPasswordView(View):
     def post(self, request):
         post_form = self.form(request.POST)
         if post_form.is_valid():
-            email = post_form.cleaned_data.get('email')
+            email = post_form.cleaned_data.get('email').lower()
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
