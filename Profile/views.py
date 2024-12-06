@@ -8,7 +8,6 @@ from Auth.utils import VerificationManager
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import WishListItem
 
 # Create your views here.
 

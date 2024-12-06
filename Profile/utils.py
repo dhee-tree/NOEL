@@ -80,21 +80,14 @@ class GetUserWishList():
         except ObjectDoesNotExist:
             return False
 
-    def get_wishlist_count(self):
-        """Returns the count of wishlist of the loggedin user"""
-        try:
-            return WishListItem.objects.filter(user_profile=self.user.userprofile).count()
-        except ObjectDoesNotExist:
-            return None
-
-    def get_wishlist_by_user_profile(self, user_profile):
+    def get_wishlist_item_by_user_profile(self, user_profile):
         """Returns the wishlist of any user"""
         try:
             return WishListItem.objects.filter(user_profile=user_profile)
         except ObjectDoesNotExist:
             return None
 
-    def get_wishlist_by_id(self, item_id):
+    def get_wishlist_item_by_id(self, item_id):
         """Returns a wishlist by id"""
         try:
             return WishListItem.objects.get(item_id=item_id)

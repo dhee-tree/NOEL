@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView, View, DeleteView
 from Auth.utils import VerificationManager
+from Profile.utils import GetUserWishList
 
 # Create your views here.
 @method_decorator(csrf_protect, name='dispatch')
@@ -204,6 +205,7 @@ class UnwrappedView(LoginRequiredMixin, View):
                             'picked': group_profile.get_picked(group),
                             'picked_address': group_profile.get_picked_address(group),
                             'picked_email': group_profile.get_picked_email(group),
+                            'picked_wish_list': group_profile.get_picked_user_wishlist(group)
                         }
                         return render(request, self.template_name, context)
                     else:

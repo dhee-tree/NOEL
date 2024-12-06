@@ -1,6 +1,6 @@
 import random, string
 from django.db import IntegrityError
-from Profile.models import UserProfile
+from Profile.models import UserProfile, WishListItem
 from .models import SantaGroup, GroupMember, Pick
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -134,6 +134,13 @@ class GroupManager():
         """Returns the picked user email of the loggedin user"""
         try:
             return UserProfile.objects.get(full_name=self.get_picked(group)).user.email
+        except ObjectDoesNotExist:
+            return None
+        
+    def get_picked_user_wishlist(self, group):
+        """Returns the wishlist of the picked user"""
+        try:
+            return WishListItem.objects.filter(user_profile=UserProfile.objects.get(full_name=self.get_picked(group)))
         except ObjectDoesNotExist:
             return None
 
