@@ -11,6 +11,7 @@ class UserProfile(models.Model):
         ('Prefer not to say', 'Prefer not to say'),
     )
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    google_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=50, choices=gender_choices, blank=True)
