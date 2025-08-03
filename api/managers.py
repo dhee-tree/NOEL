@@ -2,7 +2,6 @@ import random
 import string
 from django.core.exceptions import ObjectDoesNotExist
 
-#TODO: Remove utils, now lives in managers.py
 
 class VerificationManager():
     def __init__(self, profile):
