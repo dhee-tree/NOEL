@@ -13,10 +13,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     address = serializers.CharField(
         write_only=True, required=False, allow_blank=True)
 
+    gender = serializers.CharField(
+        write_only=True, required=False, allow_blank=True)
+
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name',
-                  'password', 'password2', 'address']
+                  'password', 'password2', 'address', 'gender']
         extra_kwargs = {
             'password': {'write_only': True, 'validators': [validate_password]},
             'first_name': {'required': True},
@@ -45,6 +48,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
 
         user.userprofile.address = validated_data.get('address', '')
+        user.userprofile.gender = validated_data.get('gender', '')
         user.userprofile.save()
         return user
 
@@ -62,8 +66,10 @@ class UserSerializer(serializers.ModelSerializer):
     """
 
     role = serializers.CharField(source='userprofile.role', read_only=True)
-    is_verified = serializers.BooleanField(source='userprofile.is_verified', read_only=True)
+    is_verified = serializers.BooleanField(
+        source='userprofile.is_verified', read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'is_verified']
+        fields = ['id', 'username', 'email', 'first_name',
+                  'last_name', 'role', 'is_verified']

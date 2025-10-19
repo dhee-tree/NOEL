@@ -40,6 +40,7 @@ class GoogleLoginAPIView(APIView):
         email = idinfo['email']
         first_name = idinfo.get('given_name', '')
         last_name = idinfo.get('family_name', '')
+        gender = idinfo.get('gender', '')
 
         # "Get or Create" user logic
         try:
@@ -50,6 +51,8 @@ class GoogleLoginAPIView(APIView):
                 # Case 2: User exists with this email, link their Google account
                 user = User.objects.get(email=email)
                 user.userprofile.google_id = google_user_id
+                user.userprofile.gender = gender
+                user.userprofile.is_verified = True
                 user.userprofile.save()
             except User.DoesNotExist:
                 # Case 3: No user found, create a new one
@@ -63,6 +66,8 @@ class GoogleLoginAPIView(APIView):
                 user.set_unusable_password()
                 user.save()
                 user.userprofile.google_id = google_user_id
+                user.userprofile.gender = gender
+                user.userprofile.is_verified = True
                 user.userprofile.save()
 
         # Generate JWT tokens for the user
@@ -77,6 +82,7 @@ class GoogleLoginAPIView(APIView):
                 'email': user.email,
                 'name': user.get_full_name(),
                 'role': user.userprofile.role,
+                'is_verified': user.userprofile.is_verified,
             }
         }
 
