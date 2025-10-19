@@ -12,7 +12,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import NewPasswordForm
+from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -152,57 +153,25 @@ class ChangePasswordView(LoginRequiredMixin, View):
             return render(request, self.template_name, context)
 
 
-@method_decorator(csrf_protect, name='dispatch')
-class VerifyEmailView(LoginRequiredMixin, View):
-    template_name = 'auth/verify-email.html'
-    form = None
+class VerifyEmailView(APIView):
+    """
+    View to handle email verification.
+    """
 
-    def get(self, request):
-        token = request.GET.get('token')
-        user_profile = UserProfile.objects.get(user=request.user)
-        verification_manager = VerificationManager(user_profile)
-        if token:
-            if verification_manager.check_user_verified():
-                messages.error(
-                    request, 'You have already verified your account.')
-                return redirect('home')
-            else:
-                if verification_manager.verify_user(token):
-                    messages.success(
-                        request, 'You have successfully verified your account.')
-                    return redirect('home')
-                else:
-                    messages.error(request, 'Invalid verification code.')
-                    return redirect('verify_email')
-        else:
-            if verification_manager.check_user_verified():
-                messages.error(
-                    request, 'You have already verified your account.')
-                return redirect('home')
-            else:
-                if request.user.is_staff:
-                    messages.error(
-                        request, 'You are not allowed to verify your account. Admins do not have a profile.')
-                    return redirect('admin:index')
-                else:
-                    context = {'form': self.form}
-                    return render(request, self.template_name, context)
+    permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request):
-        post_form = self.form(request.POST)
-        if post_form.is_valid():
-            verification_code = post_form.cleaned_data.get('code')
-            user_profile = UserProfile.objects.get(user=request.user)
-            verification_manager = VerificationManager(user_profile)
-            if verification_manager.verify_user(verification_code):
-                messages.success(
-                    request, 'You have successfully verified your account.')
-                return redirect('home')
-            else:
-                messages.error(request, 'Invalid verification code.')
-                return redirect('verify_email')
+    def post(self, request, token):
+        try:
+            user_profile = UserProfile.objects.get(verification_code=token)
+        except UserProfile.DoesNotExist:
+            return Response({"errors": {"token": ["Invalid verification code."]}}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = VerifyEmailSerializer(user_profile, data={'token': token})
+        if serializer.is_valid():
+            serializer.update(user_profile, serializer.validated_data)
+            return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
         else:
-            return render(request, self.template_name, {'form': post_form, 'formError': True})
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @method_decorator(csrf_protect, name='dispatch')

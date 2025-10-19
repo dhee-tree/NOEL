@@ -62,7 +62,8 @@ class UserSerializer(serializers.ModelSerializer):
     """
 
     role = serializers.CharField(source='userprofile.role', read_only=True)
+    is_verified = serializers.BooleanField(source='userprofile.is_verified', read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'is_verified']
