@@ -3,6 +3,12 @@ from django.urls import path
 from .forms import createGroup
 
 urlpatterns = [
+    # API endpoints (accessed via /api/groups/)
+    path('', views.GroupListCreateAPIView.as_view(), name='group_api_list_create'),
+    path('join/', views.JoinGroupAPIView.as_view(), name='group_api_join'),
+    path('<uuid:group_id>/', views.GroupDetailAPIView.as_view(), name='group_api_detail'),
+    
+    # Template-based views
     path('home/', views.HomeView.as_view(), name='group_home'),
     path('create/', views.CreateGroupView.as_view(form=createGroup), name='group_create'),
     path('join/', views.JoinGroupView.as_view(), name='group_join'),

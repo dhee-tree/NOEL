@@ -15,6 +15,12 @@ from django.views.generic import TemplateView, ListView, View, DeleteView
 from Auth.utils import VerificationManager
 from Profile.utils import GetUserWishList
 
+# API imports
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import SantaGroupSerializer, CreateGroupSerializer, UpdateGroupSerializer, JoinGroupSerializer
+
 # Create your views here.
 @method_decorator(csrf_protect, name='dispatch')
 class HomeView(LoginRequiredMixin, View):
@@ -362,3 +368,166 @@ class InviteFriendsView(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.error(request, 'Group does not exist.')
             return redirect('group_home')
+
+
+# ==================== API Views ====================
+
+class GroupListCreateAPIView(generics.ListCreateAPIView):
+    """
+    API endpoint for listing all user groups and creating a new group.
+    GET /groups - Returns all groups the user is a member of
+    POST /groups - Creates a new group
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """Return all groups where the user is a member"""
+        user_profile = self.request.user.userprofile
+        return SantaGroup.objects.filter(
+            groupmember__user_profile_id=user_profile,
+            is_archived=False
+        ).distinct()
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateGroupSerializer
+        return SantaGroupSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Use GroupManager to create the group (handles group_code generation)
+        group_manager = GroupManager(request.user)
+        group_name = serializer.validated_data['group_name']
+        
+        if group_manager.create_group(group_name):
+            group = SantaGroup.objects.get(group_name=group_name)
+            response_serializer = SantaGroupSerializer(group)
+            headers = self.get_success_headers(response_serializer.data)
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        else:
+            return Response(
+                {"error": "A group with this name already exists."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class GroupDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint for retrieving, updating, and deleting a specific group.
+    GET /groups/<id> - Returns group details
+    PUT /groups/<id> - Updates group (only owner can update)
+    DELETE /groups/<id> - Deletes group (only owner can delete)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'group_id'
+    
+    def get_queryset(self):
+        """Return groups where the user is a member"""
+        user_profile = self.request.user.userprofile
+        return SantaGroup.objects.filter(
+            groupmember__user_profile_id=user_profile,
+            is_archived=False
+        )
+    
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return UpdateGroupSerializer
+        return SantaGroupSerializer
+    
+    def update(self, request, *args, **kwargs):
+        """Only group creator can update the group"""
+        group = self.get_object()
+        group_manager = GroupManager(request.user)
+        
+        if not group_manager.check_group_creator(group):
+            return Response(
+                {"error": "Only the group creator can update this group."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        partial = kwargs.pop('partial', False)
+        serializer = self.get_serializer(group, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        response_serializer = SantaGroupSerializer(group)
+        return Response(response_serializer.data)
+    
+    def destroy(self, request, *args, **kwargs):
+        """Only group creator can delete the group"""
+        group = self.get_object()
+        group_manager = GroupManager(request.user)
+        
+        if not group_manager.check_group_creator(group):
+            return Response(
+                {"error": "Only the group creator can delete this group."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        group.delete()
+        return Response(
+            {"message": "Group deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class JoinGroupAPIView(APIView):
+    """
+    API endpoint for joining a group using a group code.
+    POST /groups/join - Join a group with a group code
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = JoinGroupSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        group_code = serializer.validated_data['group_code'].upper()
+        group_manager = GroupManager(request.user)
+        
+        try:
+            group = SantaGroup.objects.get(group_code=group_code)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Invalid group code."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Check if user is already a member
+        if group_manager.check_group_member(group):
+            return Response(
+                {"error": "You are already a member of this group."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if group is open
+        if not group.is_open:
+            return Response(
+                {"error": "This group has been closed by the owner."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Join the group using GroupManager
+        if group_manager.join_group(group_code):
+            response_serializer = SantaGroupSerializer(group)
+            return Response(
+                {
+                    "message": "You have successfully joined the group.",
+                    "group": response_serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"error": "Unable to join the group."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
