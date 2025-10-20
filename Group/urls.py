@@ -7,6 +7,9 @@ urlpatterns = [
     path('', views.GroupListCreateAPIView.as_view(), name='group_api_list_create'),
     path('join/', views.JoinGroupAPIView.as_view(), name='group_api_join'),
     path('<uuid:group_id>/', views.GroupDetailAPIView.as_view(), name='group_api_detail'),
+    path('<uuid:group_id>/archive/', views.ArchiveGroupAPIView.as_view(), name='group_api_archive'),
+    path('<uuid:group_id>/unarchive/', views.UnarchiveGroupAPIView.as_view(), name='group_api_unarchive'),
+    path('<uuid:group_id>/toggle-status/', views.ToggleGroupStatusAPIView.as_view(), name='group_api_toggle_status'),
     
     # Template-based views
     path('home/', views.HomeView.as_view(), name='group_home'),

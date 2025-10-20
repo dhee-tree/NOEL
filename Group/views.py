@@ -397,12 +397,22 @@ class GroupListCreateAPIView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        # Use GroupManager to create the group (handles group_code generation)
-        group_manager = GroupManager(request.user)
+        # Extract validated data
         group_name = serializer.validated_data['group_name']
         
+        # Use GroupManager to create the basic group (handles group_code generation)
+        group_manager = GroupManager(request.user)
+        
         if group_manager.create_group(group_name):
+            # Get the created group and update it with all the additional fields
             group = SantaGroup.objects.get(group_name=group_name)
+            
+            # Update all additional fields from validated data
+            for field, value in serializer.validated_data.items():
+                if field != 'group_name':  # Skip group_name as it's already set
+                    setattr(group, field, value)
+            group.save()
+            
             response_serializer = SantaGroupSerializer(group)
             headers = self.get_success_headers(response_serializer.data)
             return Response(
@@ -529,5 +539,116 @@ class JoinGroupAPIView(APIView):
                 {"error": "Unable to join the group."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class ArchiveGroupAPIView(APIView):
+    """
+    API endpoint for archiving a group.
+    POST /groups/<group_id>/archive - Archive a group (only owner)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Group not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        group_manager = GroupManager(request.user)
+        
+        # Only group creator can archive
+        if not group_manager.check_group_creator(group):
+            return Response(
+                {"error": "Only the group creator can archive this group."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Archive the group
+        group.is_archived = True
+        group.save()
+        
+        return Response(
+            {"message": "Group archived successfully."},
+            status=status.HTTP_200_OK
+        )
+
+
+class UnarchiveGroupAPIView(APIView):
+    """
+    API endpoint for unarchiving a group.
+    POST /groups/<group_id>/unarchive - Unarchive a group (only owner)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Group not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        group_manager = GroupManager(request.user)
+        
+        # Only group creator can unarchive
+        if not group_manager.check_group_creator(group):
+            return Response(
+                {"error": "Only the group creator can unarchive this group."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Unarchive the group
+        group.is_archived = False
+        group.save()
+        
+        return Response(
+            {"message": "Group unarchived successfully."},
+            status=status.HTTP_200_OK
+        )
+
+
+class ToggleGroupStatusAPIView(APIView):
+    """
+    API endpoint for opening/closing a group.
+    POST /groups/<group_id>/toggle-status - Toggle group open/close status (only owner)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Group not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        group_manager = GroupManager(request.user)
+        
+        # Only group creator can toggle status
+        if not group_manager.check_group_creator(group):
+            return Response(
+                {"error": "Only the group creator can change the group status."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Toggle the status
+        group.is_open = not group.is_open
+        group.save()
+        
+        status_text = "opened" if group.is_open else "closed"
+        
+        response_serializer = SantaGroupSerializer(group)
+        return Response(
+            {
+                "message": f"Group {status_text} successfully.",
+                "group": response_serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
 
 

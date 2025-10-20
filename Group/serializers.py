@@ -34,7 +34,17 @@ class SantaGroupSerializer(serializers.ModelSerializer):
             'group_id', 
             'group_name', 
             'group_code', 
-            'is_open', 
+            'is_open',
+            'assignment_reveal_date',
+            'gift_exchange_deadline',
+            'wishlist_deadline',
+            'join_deadline',
+            'budget_min',
+            'budget_max',
+            'budget_currency',
+            'description',
+            'exchange_location',
+            'theme',
             'created_by_name',
             'created_by_id',
             'date_created', 
@@ -54,12 +64,33 @@ class CreateGroupSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = SantaGroup
-        fields = ['group_name']
+        fields = [
+            'group_name',
+            'assignment_reveal_date',
+            'gift_exchange_deadline',
+            'wishlist_deadline',
+            'join_deadline',
+            'budget_min',
+            'budget_max',
+            'budget_currency',
+            'description',
+            'exchange_location',
+            'theme'
+        ]
     
     def validate_group_name(self, value):
         if SantaGroup.objects.filter(group_name=value).exists():
             raise serializers.ValidationError("A group with this name already exists.")
         return value
+    
+    def validate(self, attrs):
+        # Validate budget range
+        if attrs.get('budget_min') and attrs.get('budget_max'):
+            if attrs['budget_min'] > attrs['budget_max']:
+                raise serializers.ValidationError({
+                    "budget_min": "Minimum budget cannot be greater than maximum budget."
+                })
+        return attrs
     
     def create(self, validated_data):
         # The user_profile will be set in the view
@@ -72,13 +103,37 @@ class UpdateGroupSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = SantaGroup
-        fields = ['group_name', 'is_open']
+        fields = [
+            'group_name',
+            'is_open',
+            'assignment_reveal_date',
+            'gift_exchange_deadline',
+            'wishlist_deadline',
+            'join_deadline',
+            'budget_min',
+            'budget_max',
+            'budget_currency',
+            'description',
+            'exchange_location',
+            'theme'
+        ]
     
     def validate_group_name(self, value):
         # Check if another group with this name exists (excluding current group)
         if SantaGroup.objects.filter(group_name=value).exclude(group_id=self.instance.group_id).exists():
             raise serializers.ValidationError("A group with this name already exists.")
         return value
+    
+    def validate(self, attrs):
+        # Validate budget range
+        budget_min = attrs.get('budget_min', self.instance.budget_min if self.instance else None)
+        budget_max = attrs.get('budget_max', self.instance.budget_max if self.instance else None)
+        
+        if budget_min and budget_max and budget_min > budget_max:
+            raise serializers.ValidationError({
+                "budget_min": "Minimum budget cannot be greater than maximum budget."
+            })
+        return attrs
 
 
 class JoinGroupSerializer(serializers.Serializer):
