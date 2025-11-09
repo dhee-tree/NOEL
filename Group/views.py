@@ -461,6 +461,12 @@ class GroupDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
                 status=status.HTTP_403_FORBIDDEN
             )
         
+        if group.is_archived:
+            return Response(
+                {"error": "Cannot update an archived group. Please unarchive it first."},
+                status=status.HTTP_423_LOCKED
+            )
+        
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(group, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -634,6 +640,12 @@ class ToggleGroupStatusAPIView(APIView):
             return Response(
                 {"error": "Only the group creator can change the group status."},
                 status=status.HTTP_403_FORBIDDEN
+            )
+        
+        if group.is_archived:
+            return Response(
+                {"error": "Cannot change status of an archived group. Please unarchive it first."},
+                status=status.HTTP_423_LOCKED
             )
         
         # Toggle the status
