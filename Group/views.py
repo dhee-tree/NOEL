@@ -372,26 +372,70 @@ class InviteFriendsView(LoginRequiredMixin, View):
 
 # ==================== API Views ====================
 
-class GroupListCreateAPIView(generics.ListCreateAPIView):
+class GroupListCreateAPIView(APIView):
     """
     API endpoint for listing all user groups and creating a new group.
-    GET /groups - Returns all groups the user is a member of
+    GET /groups - Returns active and archived groups separately
     POST /groups - Creates a new group
     """
     permission_classes = [permissions.IsAuthenticated]
     
-    def get_queryset(self):
-        """Return all groups where the user is a member"""
-        user_profile = self.request.user.userprofile
-        return SantaGroup.objects.filter(
-            groupmember__user_profile_id=user_profile,
-            is_archived=False
+    def get(self, request, *args, **kwargs):
+        """Return active and archived groups in separate arrays"""
+        from django.db.models import Q
+        
+        user_profile = request.user.userprofile
+        
+        # Get all groups user is a member of OR created
+        all_groups = SantaGroup.objects.filter(
+            Q(groupmember__user_profile_id=user_profile) | 
+            Q(created_by=user_profile)
         ).distinct()
+        
+        # Separate into active and archived
+        active_groups = all_groups.filter(is_archived=False)
+        archived_groups = all_groups.filter(is_archived=True)
+        
+        # Serialize both
+        active_serializer = SantaGroupSerializer(active_groups, many=True)
+        archived_serializer = SantaGroupSerializer(archived_groups, many=True)
+        
+        return Response({
+            "active": active_serializer.data,
+            "archived": archived_serializer.data
+        }, status=status.HTTP_200_OK)
     
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return CreateGroupSerializer
-        return SantaGroupSerializer
+    def post(self, request, *args, **kwargs):
+        """Create a new group"""
+        serializer = CreateGroupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Extract validated data
+        group_name = serializer.validated_data['group_name']
+        
+        # Use GroupManager to create the basic group (handles group_code generation)
+        group_manager = GroupManager(request.user)
+        
+        if group_manager.create_group(group_name):
+            # Get the created group and update it with all the additional fields
+            group = SantaGroup.objects.get(group_name=group_name)
+            
+            # Update all additional fields from validated data
+            for field, value in serializer.validated_data.items():
+                if field != 'group_name':  # Skip group_name as it's already set
+                    setattr(group, field, value)
+            group.save()
+            
+            response_serializer = SantaGroupSerializer(group)
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                {"error": "A group with this name already exists."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -430,7 +474,7 @@ class GroupListCreateAPIView(generics.ListCreateAPIView):
 class GroupDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint for retrieving, updating, and deleting a specific group.
-    GET /groups/<id> - Returns group details
+    GET /groups/<id> - Returns group details (active or archived)
     PUT /groups/<id> - Updates group (only owner can update)
     DELETE /groups/<id> - Deletes group (only owner can delete)
     """
@@ -438,12 +482,14 @@ class GroupDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'group_id'
     
     def get_queryset(self):
-        """Return groups where the user is a member"""
+        """Return groups where the user is a member or created (including archived)"""
+        from django.db.models import Q
+        
         user_profile = self.request.user.userprofile
         return SantaGroup.objects.filter(
-            groupmember__user_profile_id=user_profile,
-            is_archived=False
-        )
+            Q(groupmember__user_profile_id=user_profile) | 
+            Q(created_by=user_profile)
+        ).distinct()
     
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
@@ -663,4 +709,75 @@ class ToggleGroupStatusAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+
+class LeaveGroupAPIView(APIView):
+    """
+    API endpoint for leaving a group.
+    POST /groups/<group_id>/leave - Leave a group (any member)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Group not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        user_profile = request.user.userprofile
+        group_manager = GroupManager(request.user)
+        
+        # Check if user is a member
+        if not group_manager.check_group_member(group):
+            return Response(
+                {"error": "You are not a member of this group."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Remove the member
+        try:
+            group_member = GroupMember.objects.get(
+                group_id=group, 
+                user_profile_id=user_profile
+            )
+            group_member.delete()
+            
+            return Response(
+                {"message": f"You have successfully left {group.group_name}."},
+                status=status.HTTP_200_OK
+            )
+        except GroupMember.DoesNotExist:
+            return Response(
+                {"error": "Membership not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class CheckGroupOwnerAPIView(APIView):
+    """
+    API endpoint to check if the user is the creator/owner of a group.
+    GET /groups/<group_id>/is-owner - Returns boolean indicating ownership
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response(
+                {"error": "Group not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        group_manager = GroupManager(request.user)
+        is_owner = group_manager.check_group_creator(group)
+        
+        return Response(
+            {
+                "is_owner": is_owner,
+            },
+            status=status.HTTP_200_OK
+        )
 
