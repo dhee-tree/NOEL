@@ -45,6 +45,7 @@ class UserProfile(models.Model):
         return self.full_name
 
 
+# DEPRECATED: Kept for backward compatibility
 class WishListItem(models.Model):
     item_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)

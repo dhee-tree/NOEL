@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'Profile',
     'Group',
     'Mail',
+    'Wishlist',
     'api',
 
     # Third-party apps
