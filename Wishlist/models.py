@@ -11,6 +11,7 @@ class Priority(models.TextChoices):
 class Wishlist(models.Model):
     wishlist_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, blank=True, null=True)
     user_profile = models.ForeignKey(
         'Profile.UserProfile', on_delete=models.CASCADE)
     group = models.ForeignKey('Group.SantaGroup', on_delete=models.CASCADE)
@@ -20,6 +21,10 @@ class Wishlist(models.Model):
     class Meta:
         unique_together = ('user_profile', 'group')
         ordering = ['-date_updated']
+
+    def save(self, *args, **kwargs):
+        self.name = f"{self.group.group_name} Wishlist"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user_profile.full_name}'s wishlist for {self.group.group_name}"

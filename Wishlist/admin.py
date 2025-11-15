@@ -5,7 +5,8 @@ from .models import Wishlist, WishlistItem
 
 
 class WishlistAdmin(admin.ModelAdmin):
-    list_display = ('user_profile', 'group', 'date_created', 'date_updated')
+    list_display = ('name', 'user_profile', 'group',
+                    'date_created', 'date_updated')
     list_filter = ('date_created',)
 
 
