@@ -8,4 +8,5 @@ urlpatterns = [
     path('users/me/', views.UserProfileView.as_view(), name='user-profile'),
     path('groups/', include('Group.urls')),
     path('wishlists/', include('Wishlist.urls')),
+    path('profile/', include('Profile.urls')),
 ]

@@ -59,7 +59,7 @@ class LoginView(View):
 
 
 @method_decorator(csrf_protect, name='dispatch')
-class ChangePasswordView(LoginRequiredMixin, View):
+class V1_ChangePasswordView(LoginRequiredMixin, View):
     template_name = 'auth/change-password.html'
     password_form = None
 
@@ -106,27 +106,6 @@ class ChangePasswordView(LoginRequiredMixin, View):
                 'password_form': post_form,
             }
             return render(request, self.template_name, context)
-
-
-class VerifyEmailView(APIView):
-    """
-    View to handle email verification.
-    """
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request, token):
-        try:
-            user_profile = UserProfile.objects.get(verification_code=token)
-        except UserProfile.DoesNotExist:
-            return Response({"errors": {"token": ["Invalid verification code."]}}, status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = VerifyEmailSerializer(user_profile, data={'token': token})
-        if serializer.is_valid():
-            serializer.update(user_profile, serializer.validated_data)
-            return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
-        else:
-            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -217,3 +196,76 @@ class ResetPasswordConfirmView(View):
         else:
             messages.error(request, 'Invalid reset password link.')
             return redirect('login')
+
+##############################
+# API VIEWS
+##############################
+
+
+class VerifyEmailView(APIView):
+    """
+    View to handle email verification.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, token):
+        try:
+            user_profile = UserProfile.objects.get(verification_code=token)
+        except UserProfile.DoesNotExist:
+            return Response({"errors": {"token": ["Invalid verification code."]}}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = VerifyEmailSerializer(user_profile, data={'token': token})
+        if serializer.is_valid():
+            serializer.update(user_profile, serializer.validated_data)
+            return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordView(APIView):
+    """
+    API endpoint for changing the authenticated user's password.
+    POST /api/change-password/ - Change password
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        """Change the authenticated user's password"""
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not current_password or not new_password or not confirm_password:
+            return Response(
+                {"error": "Current, new, and confirm passwords are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_password != confirm_password:
+            return Response(
+                {"error": "New password and confirm password do not match."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = request.user
+        if not user.check_password(current_password):
+            return Response(
+                {"error": "Old password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if current_password == new_password:
+            return Response(
+                {"error": "New password cannot be the same as the old password."},
+                status=status.HTTP_409_CONFLICT
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {"message": "Password updated successfully."},
+            status=status.HTTP_200_OK
+        )

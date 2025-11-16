@@ -30,7 +30,7 @@ class UserProfile(models.Model):
     full_name = models.CharField(max_length=50, blank=True)
     gender = models.CharField(
         max_length=50, choices=gender_choices, blank=True)
-    address = models.CharField(max_length=200, blank=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
     profile_pic = models.CharField(max_length=200, blank=True)
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=8, blank=True, default='')

@@ -9,4 +9,7 @@ urlpatterns = [
     path('wishlist/add/', views.AddWishListView.as_view(), name='add_wishlist'),
     path('wishlist/edit/<uuid:item_id>/', views.EditWishListView.as_view(), name='edit_wishlist'),
     path('wishlist/delete/<uuid:item_id>/', views.DeleteWishListView.as_view(), name='delete_wishlist'),
+
+    # API endpoints
+    path('', views.UserProfileAPIView.as_view(), name='user_profile_api'),
 ]
