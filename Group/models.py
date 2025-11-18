@@ -42,6 +42,26 @@ class SantaGroup(models.Model):
     exchange_location = models.CharField(
         max_length=255, blank=True, null=True, help_text="Physical or virtual location for exchange")
 
+    # White Elephant mode
+    is_white_elephant = models.BooleanField(
+        default=False, help_text="Enable White Elephant mode (gift stealing)")
+    
+    # The Snatcher (Phase 2)
+    snatcher_user_id = models.IntegerField(
+        null=True, 
+        blank=True,
+        help_text="The user chosen as The Snatcher"
+    )
+    snatch_revealed_at = models.DateTimeField(
+        null=True, 
+        blank=True,
+        help_text="When The Snatcher was revealed to them"
+    )
+    snatcher_notified = models.BooleanField(
+        default=False,
+        help_text="Has The Snatcher been notified?"
+    )
+
     # Theme choices
     THEME_CHOICES = [
         ('christmas', 'Christmas'),

@@ -35,6 +35,7 @@ class SantaGroupSerializer(serializers.ModelSerializer):
             'group_name', 
             'group_code', 
             'is_open',
+            'is_archived',
             'assignment_reveal_date',
             'gift_exchange_deadline',
             'wishlist_deadline',
@@ -44,6 +45,10 @@ class SantaGroupSerializer(serializers.ModelSerializer):
             'budget_currency',
             'description',
             'exchange_location',
+            'is_white_elephant',
+            'snatcher_user_id',
+            'snatch_revealed_at',
+            'snatcher_notified',
             'theme',
             'created_by_name',
             'created_by_id',
@@ -52,7 +57,7 @@ class SantaGroupSerializer(serializers.ModelSerializer):
             'member_count',
             'members'
         ]
-        read_only_fields = ['group_id', 'group_code', 'created_by_name', 'created_by_id', 'date_created', 'date_updated', 'member_count']
+        read_only_fields = ['group_id', 'group_code', 'created_by_name', 'created_by_id', 'date_created', 'date_updated', 'member_count', 'snatcher_user_id', 'snatch_revealed_at', 'snatcher_notified']
     
     def get_member_count(self, obj):
         return GroupMember.objects.filter(group_id=obj, is_archived=False).count()
@@ -75,6 +80,7 @@ class CreateGroupSerializer(serializers.ModelSerializer):
             'budget_currency',
             'description',
             'exchange_location',
+            'is_white_elephant',
             'theme'
         ]
     
@@ -115,6 +121,7 @@ class UpdateGroupSerializer(serializers.ModelSerializer):
             'budget_currency',
             'description',
             'exchange_location',
+            'is_white_elephant',
             'theme'
         ]
     
