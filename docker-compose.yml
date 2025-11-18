@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   web:
+    container_name: "${CONTAINER_NAME:-noel}"
     build:
       context: .
     command: gunicorn noelProject.wsgi:application --bind 0.0.0.0:8000
@@ -11,4 +12,3 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-
