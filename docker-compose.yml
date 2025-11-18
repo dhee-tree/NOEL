@@ -12,7 +12,3 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-<<<<<<< HEAD
-    container_name: "${SERVICE_NAME:-noel}"
-=======
->>>>>>> b1433a02fc95a5708d3087562384e9321cd3cbb6
