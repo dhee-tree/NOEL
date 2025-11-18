@@ -2,8 +2,13 @@
 Load data into new database
 """
 import os
+import sys
 import django
 import json
+
+# Add the project root to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'noelProject.settings')
 django.setup()
