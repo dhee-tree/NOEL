@@ -15,6 +15,7 @@ import django_heroku
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -166,10 +167,14 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS =config("CSRF_TRUSTED_ORIGINS").split(",")
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS").split(",")
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS").split(",")
+
+logger = logging.getLogger(__name__)
+logger.warning(f"CSRF_TRUSTED_ORIGINS={CSRF_TRUSTED_ORIGINS}")
+logger.warning(f"CORS_ALLOWED_ORIGINS={CORS_ALLOWED_ORIGINS}")
 
 # Swagger and API documentation settings
 # In Noel/settings.py
