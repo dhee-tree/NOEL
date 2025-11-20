@@ -418,7 +418,7 @@ class GroupListCreateAPIView(APIView):
         
         if group_manager.create_group(group_name):
             # Get the created group and update it with all the additional fields
-            group = SantaGroup.objects.get(group_name=group_name)
+            group = SantaGroup.objects.get(group_name=group_name, created_by=request.user.userprofile)
             
             # Update all additional fields from validated data
             for field, value in serializer.validated_data.items():
@@ -430,39 +430,6 @@ class GroupListCreateAPIView(APIView):
             return Response(
                 response_serializer.data,
                 status=status.HTTP_201_CREATED
-            )
-        else:
-            return Response(
-                {"error": "A group with this name already exists."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Extract validated data
-        group_name = serializer.validated_data['group_name']
-        
-        # Use GroupManager to create the basic group (handles group_code generation)
-        group_manager = GroupManager(request.user)
-        
-        if group_manager.create_group(group_name):
-            # Get the created group and update it with all the additional fields
-            group = SantaGroup.objects.get(group_name=group_name)
-            
-            # Update all additional fields from validated data
-            for field, value in serializer.validated_data.items():
-                if field != 'group_name':  # Skip group_name as it's already set
-                    setattr(group, field, value)
-            group.save()
-            
-            response_serializer = SantaGroupSerializer(group)
-            headers = self.get_success_headers(response_serializer.data)
-            return Response(
-                response_serializer.data,
-                status=status.HTTP_201_CREATED,
-                headers=headers
             )
         else:
             return Response(

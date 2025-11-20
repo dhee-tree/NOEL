@@ -1,5 +1,6 @@
 import random, string
-from django.db import IntegrityError
+import logging
+from django.db import IntegrityError, transaction
 from Profile.models import UserProfile, WishListItem
 from .models import SantaGroup, GroupMember, Pick
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,6 +10,7 @@ class GroupManager():
     """Class to manage groups"""
     def __init__(self, user):
         self.user = user
+        self.logger = logging.getLogger(__name__)
 
     def groupJoinCode(self):
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
@@ -16,13 +18,18 @@ class GroupManager():
     def create_group(self, group_name):
         """Create a new group by the loggedin user"""
         try:
-            group_code = self.groupJoinCode()
-            new_group = SantaGroup.objects.create(group_name=group_name, group_code=group_code, created_by=self.user.userprofile)
-            GroupMember.objects.create(group_id=new_group, user_profile_id=self.user.userprofile)
+            with transaction.atomic():
+                group_code = self.groupJoinCode()
+                new_group = SantaGroup.objects.create(group_name=group_name, group_code=group_code, created_by=self.user.userprofile)
+                GroupMember.objects.create(group_id=new_group, user_profile_id=self.user.userprofile)
             return True
-        except IntegrityError:
+        except IntegrityError as e:
+            # Log full exception for debugging in production
+            self.logger.exception("IntegrityError creating group '%s' for user %s", group_name, getattr(self.user, 'id', None))
             return False
-        except ObjectDoesNotExist:
+        except Exception as e:
+            # Catch-all to surface unexpected errors (e.g. DB constraint, signals)
+            self.logger.exception("Error creating group '%s' for user %s: %s", group_name, getattr(self.user, 'id', None), str(e))
             return False
 
     def user_group(self):
