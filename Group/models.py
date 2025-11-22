@@ -19,12 +19,8 @@ class SantaGroup(models.Model):
     is_archived = models.BooleanField(default=False)
 
     # Date fields for event scheduling
-    assignment_reveal_date = models.DateTimeField(
-        null=True, blank=True, help_text="When participants can see their assigned person")
     gift_exchange_deadline = models.DateTimeField(
         null=True, blank=True, help_text="Final date for gift exchange")
-    wishlist_deadline = models.DateTimeField(
-        null=True, blank=True, help_text="Deadline for submitting wishlists")
     join_deadline = models.DateTimeField(
         null=True, blank=True, help_text="Last date to join the group")
 
@@ -81,18 +77,34 @@ class SantaGroup(models.Model):
 class Pick(models.Model):
     pick_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    full_name = models.CharField(max_length=50, blank=False)
-    picked_by = models.CharField(max_length=255, blank=False)
+    full_name = models.CharField(max_length=50, null=True, blank=True)
+    picked_by_profile = models.ForeignKey(
+        'Profile.UserProfile', on_delete=models.CASCADE, null=True, blank=True, related_name='picks_made')
+    picked_profile = models.ForeignKey(
+        'Profile.UserProfile', on_delete=models.CASCADE, null=True, blank=True, related_name='picks_received')
     group_id = models.ForeignKey(
         SantaGroup, on_delete=models.CASCADE, null=True, blank=False)
     date_picked = models.DateField(default=date.today)
     is_archived = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('full_name', 'group_id')
+        constraints = [
+            models.UniqueConstraint(fields=['group_id', 'picked_profile'], name='unique_pick_per_group'),
+        ]
 
     def __str__(self):
-        return self.full_name
+        # Prefer the picked profile's username when available, else fallback to picker's username
+        try:
+            if self.picked_profile and getattr(self.picked_profile, 'user', None):
+                return self.picked_profile.user.username
+        except Exception:
+            pass
+        try:
+            if self.picked_by_profile and getattr(self.picked_by_profile, 'user', None):
+                return self.picked_by_profile.user.username
+        except Exception:
+            pass
+        return str(self.pick_id)
 
 
 class GroupMember(models.Model):
