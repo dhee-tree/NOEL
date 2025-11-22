@@ -11,6 +11,10 @@ from .serializers import (
     CreateUpdateWishlistItemSerializer,
 )
 from Group.utils import GroupManager
+from rest_framework.exceptions import PermissionDenied
+from rest_framework import permissions
+from Mail.utils import MailManager
+from Group.models import Pick, GroupMember
 
 
 class WishlistListCreateAPIView(APIView):
@@ -76,15 +80,55 @@ class WishlistDetailAPIView(generics.RetrieveDestroyAPIView):
     lookup_field = 'wishlist_id'
 
     def get_queryset(self):
-        """Return wishlists owned by the authenticated user"""
+        """Base queryset: all wishlists. Permission checks are applied in `get_object`."""
+        return Wishlist.objects.all()
+
+    def get_object(self):
+        """Retrieve the wishlist and enforce access: owner OR a user who picked this profile in the same group."""
+        wishlist = get_object_or_404(Wishlist, wishlist_id=self.kwargs.get('wishlist_id'))
+
         user_profile = self.request.user.userprofile
-        return Wishlist.objects.filter(user_profile=user_profile)
+        # Owner always allowed
+        if wishlist.user_profile == user_profile:
+            return wishlist
+
+        # Allow if requester picked this wishlist owner in the same group
+        from Group.models import Pick
+        picked = Pick.objects.filter(
+            group_id=wishlist.group,
+            picked_by_profile=self.request.user.userprofile,
+            picked_profile=wishlist.user_profile,
+        ).exists()
+
+        if picked:
+            return wishlist
+
+        # Not allowed
+        raise PermissionDenied('You do not have permission to view this wishlist.')
+
+    def retrieve(self, request, *args, **kwargs):
+        """Return wishlist details. Owners see all items; pickers see only public items."""
+        wishlist = self.get_object()
+        user_profile = request.user.userprofile
+
+        serializer = WishlistSerializer(wishlist)
+        data = serializer.data
+
+        # If requester is not the owner, filter items to public only
+        if wishlist.user_profile != user_profile:
+            items_qs = WishlistItem.objects.filter(wishlist=wishlist, is_public=True).order_by('-priority')
+            data['items'] = WishlistItemSerializer(items_qs, many=True).data
+
+        return Response(data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         """Only wishlist owner can delete"""
-        wishlist = self.get_object()
+        wishlist = get_object_or_404(Wishlist, wishlist_id=self.kwargs.get('wishlist_id'))
+        user_profile = request.user.userprofile
+        if wishlist.user_profile != user_profile:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied('Only the wishlist owner can delete this wishlist.')
 
-        # Ownership already validated by get_queryset
         wishlist.delete()
         return Response(
             {"message": "Wishlist deleted successfully."},
