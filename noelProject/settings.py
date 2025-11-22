@@ -11,11 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-import django_heroku
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +30,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = [config("ALLOWED_HOSTS")]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -54,7 +52,6 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
-    'drf_spectacular',
     'rest_framework_simplejwt',
     'corsheaders',
 
@@ -148,9 +145,6 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Heroku settings
-django_heroku.settings(locals())
-
 # Authentication settings
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '2fa'
@@ -179,14 +173,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Noel API',
-    'DESCRIPTION': 'A backend API for the Noel project, built with Django REST Framework.',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': True, 
 }
 
 # JWT settings
