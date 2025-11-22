@@ -202,3 +202,62 @@ class WishlistItemDetailAPIView(APIView):
             {"message": "Item deleted successfully."},
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+class PickPingAPIView(APIView):
+    """API endpoint to send a ping email to the picked user for a given pick.
+
+    POST /wishlists/pick/<pick_id>/ping/ - Sends ping email to the picked user's email
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pick_id, *args, **kwargs):
+        try:
+            pick = Pick.objects.get(pick_id=pick_id)
+        except Pick.DoesNotExist:
+            return Response({"error": "Pick not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Verify requester is a member of the pick's group
+        user_profile = request.user.userprofile
+        if not GroupMember.objects.filter(group_id=pick.group_id, user_profile_id=user_profile).exists():
+            return Response({"error": "You are not a member of this group."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Ensure picked profile and email exist
+        if not getattr(pick, 'picked_profile', None):
+            return Response({"error": "No picked profile available for this pick."}, status=status.HTTP_400_BAD_REQUEST)
+
+        picked_profile = pick.picked_profile
+        email = None
+        if getattr(picked_profile, 'user', None):
+            email = getattr(picked_profile.user, 'email', None)
+
+        if not email:
+            return Response({"error": "Picked user has no email address."}, status=status.HTTP_400_BAD_REQUEST)
+
+        mail_manager = MailManager(email)
+
+        ping_type = None
+        if isinstance(request.data, dict):
+            ping_type = request.data.get('type')
+        if not ping_type:
+            ping_type = request.query_params.get('type')
+        ping_type = (ping_type or 'wishlist').lower()
+
+        if ping_type == 'wishlist':
+            success = mail_manager.ping_user_wishlist(pick.group_id)
+            success_msg = 'Ping (wishlist) sent successfully.'
+            fail_msg = 'Ping (wishlist) failed. Please try again later.'
+        elif ping_type == 'address':
+            success = mail_manager.ping_user_address(pick.group_id)
+            success_msg = 'Ping (address) sent successfully.'
+            fail_msg = 'Ping (address) failed. Please try again later.'
+        else:
+            return Response({"error": "Invalid ping type. Use 'wishlist' or 'address'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if success:
+            return Response({"message": success_msg}, status=status.HTTP_200_OK)
+        return Response({"error": fail_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Support GET for convenience (mirrors existing UI behavior)
+    def get(self, request, pick_id, *args, **kwargs):
+        return self.post(request, pick_id, *args, **kwargs)

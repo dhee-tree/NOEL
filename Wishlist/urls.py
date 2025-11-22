@@ -6,4 +6,5 @@ urlpatterns = [
     path('<uuid:wishlist_id>/', views.WishlistDetailAPIView.as_view(), name='wishlist_detail'),
     path('<uuid:wishlist_id>/items/', views.WishlistItemListCreateAPIView.as_view(), name='wishlist_items_list_create'),
     path('<uuid:wishlist_id>/items/<uuid:item_id>/', views.WishlistItemDetailAPIView.as_view(), name='wishlist_item_detail'),
+    path('pick/<uuid:pick_id>/ping/', views.PickPingAPIView.as_view(), name='pick_ping'),
 ]
