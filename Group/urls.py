@@ -10,6 +10,7 @@ urlpatterns = [
     # path('<uuid:group_id>/archive/', views.ArchiveGroupAPIView.as_view(), name='group_api_archive'),
     # path('<uuid:group_id>/unarchive/', views.UnarchiveGroupAPIView.as_view(), name='group_api_unarchive'),
     path('<uuid:group_id>/toggle-status/', views.ToggleGroupStatusAPIView.as_view(), name='group_api_toggle_status'),
+    path('<uuid:group_id>/pick/', views.GroupPickAPIView.as_view(), name='group_api_pick'),
     path('<uuid:group_id>/leave/', views.LeaveGroupAPIView.as_view(), name='group_api_leave'),
     path('<uuid:group_id>/is-owner/', views.CheckGroupOwnerAPIView.as_view(), name='group_api_is_owner'),
     

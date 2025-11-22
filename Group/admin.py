@@ -8,7 +8,7 @@ class SantaGroupAdmin(admin.ModelAdmin):
 
 
 class PickAdmin(admin.ModelAdmin):
-    list_display = ('picked_by', 'group_id', 'date_picked')
+    list_display = ('picked_by_profile', 'group_id', 'date_picked')
     list_filter = ('group_id', 'date_picked', 'is_archived')
 
 

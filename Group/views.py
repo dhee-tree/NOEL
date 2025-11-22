@@ -4,8 +4,9 @@ from .utils import GroupManager
 from django.contrib import messages
 from django.urls import reverse_lazy
 from Profile.utils import GetUserProfile
-from .models import SantaGroup, GroupMember
+from .models import SantaGroup, GroupMember, Pick
 from django.shortcuts import render, redirect
+from django.db import transaction
 from django.views.generic.edit import DeletionMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
@@ -19,7 +20,8 @@ from Profile.utils import GetUserWishList
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import SantaGroupSerializer, CreateGroupSerializer, UpdateGroupSerializer, JoinGroupSerializer
+from .serializers import SantaGroupSerializer, SantaGroupListSerializer, CreateGroupSerializer, UpdateGroupSerializer, JoinGroupSerializer
+from Wishlist.models import Wishlist, WishlistItem
 
 # Create your views here.
 @method_decorator(csrf_protect, name='dispatch')
@@ -396,9 +398,9 @@ class GroupListCreateAPIView(APIView):
         active_groups = all_groups.filter(is_archived=False)
         archived_groups = all_groups.filter(is_archived=True)
         
-        # Serialize both
-        active_serializer = SantaGroupSerializer(active_groups, many=True)
-        archived_serializer = SantaGroupSerializer(archived_groups, many=True)
+        # Serialize both (use compact serializer for list responses)
+        active_serializer = SantaGroupListSerializer(active_groups, many=True, context={'request': request})
+        archived_serializer = SantaGroupListSerializer(archived_groups, many=True, context={'request': request})
         
         return Response({
             "active": active_serializer.data,
@@ -748,3 +750,154 @@ class CheckGroupOwnerAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+
+class GroupPickAPIView(APIView):
+    """API endpoint to create/get a pick for the requesting user in a group.
+
+    POST /groups/<group_id>/pick/  - assign a pick to the requester (returns picked name)
+    GET  /groups/<group_id>/pick/  - return the pick for the requester
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response({"error": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # verify requester is a member
+        user_profile = request.user.userprofile
+        if not GroupMember.objects.filter(group_id=group, user_profile_id=user_profile, is_archived=False).exists():
+            return Response({"error": "You are not a member of this group."}, status=status.HTTP_403_FORBIDDEN)
+
+        # picks allowed only when group is closed
+        if group.is_open:
+            return Response({"error": "Group is still open. Picks are allowed only when group is closed."}, status=status.HTTP_403_FORBIDDEN)
+
+        # serialize access to this group's pick creation to avoid races
+        with transaction.atomic():
+            # lock the group row to serialize concurrent pick requests
+            group_locked = SantaGroup.objects.select_for_update().get(group_id=group_id)
+
+            # If requester already has a pick, return it
+            existing = Pick.objects.filter(
+                group_id=group_locked, picked_by_profile=user_profile).first()
+            if existing:
+                # Derive picked_name from the linked picked_profile (no legacy full_name)
+                picked_name = None
+                if getattr(existing, 'picked_profile', None):
+                    picked_profile = existing.picked_profile
+                    picked_name = getattr(picked_profile, 'full_name', None)
+                    if not picked_name and getattr(picked_profile, 'user', None):
+                        try:
+                            picked_name = picked_profile.user.get_full_name()
+                        except Exception:
+                            picked_name = None
+                    if not picked_name and getattr(picked_profile, 'user', None):
+                        picked_name = getattr(picked_profile.user, 'username', None)
+
+                data = {
+                    "pick_id": existing.pick_id,
+                    "picked_name": picked_name or (existing.picked_profile.user.username if existing.picked_profile and getattr(existing.picked_profile, 'user', None) else None),
+                    "wishlist_id": str(Wishlist.objects.filter(user_profile=existing.picked_profile, group=group_locked).first().wishlist_id) if existing.picked_profile and Wishlist.objects.filter(user_profile=existing.picked_profile, group=group_locked).first() and WishlistItem.objects.filter(wishlist=Wishlist.objects.filter(user_profile=existing.picked_profile, group=group_locked).first(), is_public=True).exists() else None,
+                    "picked_address": getattr(existing.picked_profile, 'address', None) if existing.picked_profile else None
+                }
+                return Response(data, status=status.HTTP_200_OK)
+
+            # Build list of eligible members (exclude archived members and the requester)
+            members = list(GroupMember.objects.filter(group_id=group_locked, is_archived=False).select_related('user_profile_id'))
+            if len(members) <= 1:
+                return Response({"error": "Not enough members to perform picks."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Candidate profiles (UserProfile instances) excluding the requester
+            candidates = [m.user_profile_id for m in members if m.user_profile_id.user.username != request.user.username]
+
+            # Exclude already-picked profiles (use picked_profile FK when present)
+            taken_ids = set(Pick.objects.filter(group_id=group_locked).values_list('picked_profile_id', flat=True))
+            available = [p for p in candidates if (p.id not in taken_ids)]
+
+            if not available:
+                return Response({"error": "No available members to pick."}, status=status.HTTP_409_CONFLICT)
+
+            picked_profile = random.choice(available)
+
+            # Derive display name from the picked profile (use profile.full_name, then user.get_full_name(), then username)
+            full_name_val = getattr(picked_profile, 'full_name', None)
+            if not full_name_val and getattr(picked_profile, 'user', None):
+                try:
+                    full_name_val = picked_profile.user.get_full_name()
+                except Exception:
+                    full_name_val = None
+            if not full_name_val and getattr(picked_profile, 'user', None):
+                full_name_val = getattr(picked_profile.user, 'username', None)
+
+            # Ensure Pick.full_name is populated so existing rows remain consistent
+            new_pick = Pick.objects.create(
+                picked_by_profile=user_profile,
+                picked_profile=picked_profile,
+                group_id=group_locked
+            )
+
+            # include wishlist id only when the wishlist has at least one public item
+            try:
+                wishlist = Wishlist.objects.filter(user_profile=picked_profile, group=group_locked).first()
+                has_public = bool(wishlist and WishlistItem.objects.filter(wishlist=wishlist, is_public=True).exists())
+                wishlist_id = wishlist.wishlist_id if has_public else None
+            except Exception:
+                wishlist_id = None
+
+            data = {"pick_id": new_pick.pick_id, 
+                    "picked_name": (picked_profile.full_name or (picked_profile.user.get_full_name() if getattr(picked_profile,'user',None) else None) or (picked_profile.user.username if getattr(picked_profile,'user',None) else None)), 
+                    "wishlist_id": str(wishlist_id) if wishlist_id else None,
+                    "picked_address": getattr(picked_profile, 'address', None) if picked_profile else None
+                    }
+            return Response(data, status=status.HTTP_201_CREATED)
+
+    def get(self, request, group_id, *args, **kwargs):
+        try:
+            group = SantaGroup.objects.get(group_id=group_id)
+        except SantaGroup.DoesNotExist:
+            return Response({"error": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # verify requester membership
+        user_profile = request.user.userprofile
+        if not GroupMember.objects.filter(group_id=group, user_profile_id=user_profile, is_archived=False).exists():
+            return Response({"error": "You are not a member of this group."}, status=status.HTTP_403_FORBIDDEN)
+
+        existing = Pick.objects.filter(
+            group_id=group, picked_by_profile=user_profile).first()
+        if not existing:
+            return Response({"error": "You have not been assigned a pick yet."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Derive picked_name from the linked picked_profile
+        picked_name = None
+        if getattr(existing, 'picked_profile', None):
+            picked_profile = existing.picked_profile
+            picked_name = getattr(picked_profile, 'full_name', None)
+            if not picked_name and getattr(picked_profile, 'user', None):
+                try:
+                    picked_name = picked_profile.user.get_full_name()
+                except Exception:
+                    picked_name = None
+            if not picked_name and getattr(picked_profile, 'user', None):
+                picked_name = getattr(picked_profile.user, 'username', None)
+
+        # include wishlist id only when the wishlist has at least one public item
+        try:
+            if getattr(existing, 'picked_profile', None):
+                wishlist = Wishlist.objects.filter(
+                    user_profile=existing.picked_profile, group=group).first()
+                wishlist_id = wishlist.wishlist_id if wishlist and WishlistItem.objects.filter(
+                    wishlist=wishlist, is_public=True).exists() else None
+            else:
+                wishlist_id = None
+        except Exception:
+            wishlist_id = None
+
+        data = {"pick_id": existing.pick_id, 
+                "picked_name": picked_name or (existing.picked_profile.user.username if existing.picked_profile and getattr(existing.picked_profile, 'user', None) else None), 
+                "wishlist_id": str(wishlist_id) if wishlist_id else None,
+                "picked_address": getattr(existing.picked_profile, 'address', None) if existing.picked_profile else None
+                }
+
+        return Response(data, status=status.HTTP_200_OK)

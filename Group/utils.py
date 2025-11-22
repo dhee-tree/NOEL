@@ -116,45 +116,67 @@ class GroupManager():
 
     # Picking
     def set_picked(self, group, picked):
-        """Sets the picked user to the loggedin user"""
+        """Sets the picked user to the loggedin user.
+
+        'picked' can be a UserProfile instance or a full_name string (legacy).
+        """
         try:
-            Pick.objects.create(group_id=group, full_name=picked, picked_by=self.user.userprofile.full_name)
+            # Resolve picked_profile
+            if hasattr(picked, 'id') and hasattr(picked, 'user'):
+                picked_profile = picked
+            else:
+                picked_profile = UserProfile.objects.filter(full_name=picked).first()
+
+            if not picked_profile:
+                return False
+
+            Pick.objects.create(group_id=group, picked_profile=picked_profile, picked_by_profile=self.user.userprofile)
             return True
-        except ObjectDoesNotExist:
+        except Exception:
             return False
 
     def get_picked(self, group):
-        """Returns the picked user of the loggedin user"""
+        """Returns the picked user's full name for the loggedin user"""
         try:
-            return Pick.objects.get(group_id=group, picked_by=self.user.userprofile.full_name).full_name
+            pick = Pick.objects.get(group_id=group, picked_by_profile=self.user.userprofile)
+            return pick.picked_profile.full_name if pick.picked_profile else None
         except ObjectDoesNotExist:
             return None
 
     def get_picked_address(self, group):
         """Returns the picked user address of the loggedin user"""
         try:
-            return UserProfile.objects.get(full_name=self.get_picked(group)).address
+            picked_name = self.get_picked(group)
+            if not picked_name:
+                return None
+            return UserProfile.objects.get(full_name=picked_name).address
         except ObjectDoesNotExist:
             return None
 
     def get_picked_email(self, group):
         """Returns the picked user email of the loggedin user"""
         try:
-            return UserProfile.objects.get(full_name=self.get_picked(group)).user.email
+            picked_name = self.get_picked(group)
+            if not picked_name:
+                return None
+            return UserProfile.objects.get(full_name=picked_name).user.email
         except ObjectDoesNotExist:
             return None
         
     def get_picked_user_wishlist(self, group):
         """Returns the wishlist of the picked user"""
         try:
-            return WishListItem.objects.filter(user_profile=UserProfile.objects.get(full_name=self.get_picked(group)))
+            picked_name = self.get_picked(group)
+            if not picked_name:
+                return None
+            return WishListItem.objects.filter(user_profile=UserProfile.objects.get(full_name=picked_name))
         except ObjectDoesNotExist:
             return None
 
     def check_pick(self, group):
-        """Checks if the logged in user has been picked a participant"""
+        """Checks if the logged in user has been assigned a pick"""
         try:
-            Pick.objects.get(picked_by=self.user.userprofile.full_name, group_id=group)
+            Pick.objects.get(picked_by_profile=self.user.userprofile, group_id=group)
             return True
         except ObjectDoesNotExist:
             return False
