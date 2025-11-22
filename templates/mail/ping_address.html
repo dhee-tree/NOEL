@@ -1,16 +1,15 @@
-<!-- Email to ping group member to add their email -->
+<!-- Email to ping group member to add their address -->
 
 {% extends "mail/mail-base.html" %}
 {% block title %}NOEL - Ping User{% endblock %}
 
 {% block body %}
-<h1>NOEL</h1>
 <h2>Hi {{ user.first_name }},</h2>
 
 <p>It seems your address is incomplete or missing</p>
-<p>A memeber of Secret Santa group <u>{{ group }}</u> has pinged you to update your address!</p>
+<p>A member of Secret Santa group <u>{{ group }}</u> has pinged you to update your address!</p>
 
-<p>Please <a href="https://noel.ighomena.me/user/update-profile/">Update you address here</a></p>
+<p>Please <a href="https://noel.ighomena.me/profile">Update your address here</a></p>
 
 {% endblock %}
 

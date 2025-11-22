@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class PingUserView(LoginRequiredMixin, View):
     def get(self, request, email, group):
         mail_manager = MailManager(email)
-        if mail_manager.ping_user_email(group):
+        if mail_manager.ping_user_address(group):
             messages.success(request, 'Ping sent successfully!')
             return redirect('group_unwrapped', group_name=group)
         else:
