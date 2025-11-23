@@ -1,92 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
     <title>{% block title %}{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Open+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'PT Serif', serif;
+        /* CSS Reset */
+        body,
+        table,
+        td,
+        a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
 
-        .email-container {
-            max-width: 600px;
-            margin: 20px auto;
-            border-radius: 10px;
-            border: 5px solid #B31312;
-            overflow: hidden;
-            text-align: center;
-            background-color: #FFF;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background-color: #B31312;
-            color: white;
-            padding: 15px 10px;
-        }
-
-        .header h1 {
-            font-family: 'Berkshire Swash', cursive;
-            margin: 0;
-            font-size: 2.5em;
-        }
-
-        .body h2 {
-            font-family: 'Mountains of Christmas', cursive;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-            color: #2B2A4C;
-        }
-
-        .body p {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-
-        .body a {
-            color: #B31312;
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
             text-decoration: none;
+        }
+
+        table {
+            border-collapse: collapse !important;
+        }
+
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background-color: #f4f4f4;
+        }
+
+        /* Client Specific Fixes */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* Styles */
+        .email-body {
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        .festive-header {
+            font-family: 'Mountains of Christmas', cursive;
+            color: #B31312;
+            /* Primary Red */
+        }
+
+        /* Button Style */
+        .button {
+            background-color: #166534;
+            /* Festive Green */
+            border-radius: 50px;
+            color: #ffffff !important;
+            display: inline-block;
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+            font-size: 16px;
             font-weight: bold;
+            line-height: 50px;
+            text-align: center;
+            text-decoration: none;
+            width: 200px;
+            -webkit-text-size-adjust: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .body a:hover {
-            text-decoration: underline;
+        .button:hover {
+            background-color: #14532d !important;
         }
 
-        .footer {
-            background-color: #2B2A4C;
-            color: white;
-            padding: 10px;
-            font-size: 0.85em;
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+
+            .padding-content {
+                padding: 20px !important;
+            }
+
+            h1 {
+                font-size: 28px !important;
+            }
         }
+    </style>
     </style>
 </head>
 
-<body>
-    <div class="email-container">
-        <div class="header">
-            <h1>NOEL</h1>
-        </div>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+    <center style="width: 100%; background-color: #f4f4f4; padding: 40px 0;">
+        <div class="email-container" style="max-width: 600px; margin: 0 auto;">
 
-        <div class="body">
-            {% block body %}{% endblock %}
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+                style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
 
-            <br><span>
-                {% block greeting %}{% endblock %}
-            </span><br>
-            <span>
-                {% block sender %}{% endblock %}
-            </span>
-        </div>
+                <tr>
+                    <td height="6" style="background-color: #B31312; font-size: 0; line-height: 0;">&nbsp;</td>
+                </tr>
 
-        <div class="footer">
-            &copy; {% now "Y" %} noel.ighomena.me
+                <tr>
+                    <td align="center" style="padding: 30px 20px 10px 20px;">
+                        <h1 class="festive-header"
+                            style="margin: 0; font-size: 42px; font-weight: 700; line-height: 1;">
+                            NOEL
+                        </h1>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="padding-content" style="padding: 30px 40px 40px 40px; text-align: left;">
+                        <div class="email-body" style="font-size: 16px; color: #333333;">
+
+                            <h2 class="festive-header" style="font-size: 24px; margin-top: 0; color: #2B2A4C;">
+                                {% block greeting %}{% endblock %}
+                            </h2>
+
+                            {% block body %}
+                            <p>The elves are busy working on your update. Stay tuned!</p>
+                            {% endblock %}
+
+                            <div style="height: 20px; font-size: 0; line-height: 0;">&nbsp;</div>
+
+                            <p style="margin-bottom: 0;">
+                                Warm wishes and festive cheer. <span style="color:#B31312; font-weight:600;">Merry Christmas 🎄</span><br>
+                                <strong style="color: #B31312;">{% block sender %}The Noel Team{% endblock %}</strong>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;">
+                        <p style="margin: 0; font-family: 'Open Sans', sans-serif; font-size: 12px; color: #888888;">
+                            &copy; {% now "Y" %} Noel Secret Santa. All rights reserved.<br>
+                            <!-- <a href="#" style="color: #888888; text-decoration: underline;">Unsubscribe</a> -->
+                        </p>
+                    </td>
+                </tr>
+            </table>
         </div>
-    </div>
+    </center>
 </body>
 
 </html>

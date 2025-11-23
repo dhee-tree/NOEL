@@ -32,6 +32,8 @@ DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
+FRONTEND_URL = config("FRONTEND_URL")
+
 
 # Application definition
 
