@@ -349,7 +349,7 @@ class PasswordResetRequestAPIView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = PasswordResetTokenGenerator().make_token(user)
 
-        MailManager(email).send_reset_password_email(name=user.first_name, uid=uid, token=token)
+        MailManager(user).send_reset_password_email(name=user.first_name, uid=uid, token=token)
 
         return Response({"detail": "If an account exists, we've sent reset instructions."}, status=status.HTTP_200_OK)
 
@@ -385,7 +385,7 @@ class PasswordResetConfirmAPIView(APIView):
         user.save()
 
         try:
-            MailManager(user.email).send_reset_password_confirm_email(
+            MailManager(user).send_reset_password_confirm_email(
                 name=user.first_name)
         except Exception:
             pass

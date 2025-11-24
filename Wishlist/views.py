@@ -271,14 +271,15 @@ class PickPingAPIView(APIView):
             return Response({"error": "No picked profile available for this pick."}, status=status.HTTP_400_BAD_REQUEST)
 
         picked_profile = pick.picked_profile
+        user = getattr(picked_profile, 'user', None)
         email = None
-        if getattr(picked_profile, 'user', None):
-            email = getattr(picked_profile.user, 'email', None)
+        if user:
+            email = getattr(user, 'email', None)
 
         if not email:
             return Response({"error": "Picked user has no email address."}, status=status.HTTP_400_BAD_REQUEST)
 
-        mail_manager = MailManager(email)
+        mail_manager = MailManager(user)
 
         ping_type = None
         if isinstance(request.data, dict):

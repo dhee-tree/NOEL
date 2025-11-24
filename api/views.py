@@ -108,7 +108,7 @@ class UserRegistrationAPIView(generics.CreateAPIView):
         user.userprofile.verification_code = verification_code
         user.userprofile.save()
 
-        MailManager(user.email).send_verification_email(
+        MailManager(user).send_verification_email(
             user.first_name, verification_code)
 
         headers = self.get_success_headers(serializer.data)

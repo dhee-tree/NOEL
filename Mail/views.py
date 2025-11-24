@@ -43,6 +43,10 @@ class ResendVerificationView(LoginRequiredMixin, View):
             return redirect('resend_code')
 
 
+##############################
+# API VIEWS
+##############################
+
 class ContactAPIView(APIView):
     """Public contact endpoint. Accepts name, email, subject, message."""
 
