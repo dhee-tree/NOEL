@@ -21,7 +21,7 @@ services:
     container_name: "${CONTAINER_NAME:-noel-web}"
     build:
       context: .
-    command: gunicorn noelProject.wsgi:application --bind 0.0.0.0:8000
+    command: ./scripts/entrypoint/entrypoint.sh
     environment:
       PYTHONUNBUFFERED: 1
     env_file:
