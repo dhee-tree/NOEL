@@ -6,3 +6,16 @@ README.md
 .git/
 .gitignore
 
+# Environment files
+.env
+.env*
+env/
+ENV/
+env.bak/
+.venv
+venv/
+venv.bak/
+
+# Django stuff:
+*.log
+__pycache__/
