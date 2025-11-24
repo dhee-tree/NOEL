@@ -66,6 +66,53 @@ class LoginView(View):
 
 
 @method_decorator(csrf_protect, name='dispatch')
+class RegisterView(View):
+    template_name = 'auth/register.html'
+    form = None
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('home')
+        else:
+            context = {'form': self.form}
+            return render(request, self.template_name, context)
+
+    def post(self, request):
+        post_form = self.form(request.POST)
+        if post_form.is_valid():
+            username = post_form.cleaned_data.get('email').lower()
+            password = post_form.cleaned_data.get('password')
+            email = post_form.cleaned_data.get('email').lower()
+            first_name = post_form.cleaned_data.get('first_name')
+            last_name = post_form.cleaned_data.get('last_name')
+            gender = post_form.cleaned_data.get('gender')
+            address = post_form.cleaned_data.get('address')
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+                user.save()
+                user_profile = UserProfile.objects.create(
+                    user=user, address=address, gender=gender)
+                verification_code = VerificationManager(
+                    user_profile).generate_verification_code()
+                user_profile.verification_code = verification_code
+                user_profile.save()
+                login(request, user)
+                MailManager(email).send_verification_email(
+                    first_name, verification_code)
+                messages.success(
+                    request, 'You have successfully registered. Please verify your account.')
+                return redirect('home')
+            else:
+                context = {'form': post_form, 'registerError': True}
+                return render(request, self.template_name, context)
+        else:
+            return render(request, self.template_name, {'form': post_form, 'formError': True})
+
+
+@method_decorator(csrf_protect, name='dispatch')
 class V1_ChangePasswordView(LoginRequiredMixin, View):
     template_name = 'auth/change-password.html'
     password_form = None
