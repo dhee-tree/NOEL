@@ -12,4 +12,5 @@ urlpatterns = [
 
     # API endpoints
     path('', views.UserProfileAPIView.as_view(), name='user_profile_api'),
+    path('email-preferences/', views.EmailPreferenceAPIView.as_view(), name='email_preferences'),
 ]

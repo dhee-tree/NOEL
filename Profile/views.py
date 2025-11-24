@@ -1,4 +1,8 @@
+from Mail.utils import get_user_from_preference_token
+from Profile.models import UserCommunicationPreference
+from django.contrib.auth.models import User
 from .serializers import (
+    UserCommunicationPreferenceSerializer,
     UserProfileSerializer,
     UpdateUserProfileSerializer,
 )
@@ -145,6 +149,7 @@ class UserProfileAPIView(APIView):
     """
     API endpoint for retrieving the authenticated user's profile.
     GET /api/profile/ - Returns the user's profile information
+    PUT /api/profile/ - Updates the user's profile information
     """
 
     permission_classes = [permissions.IsAuthenticated]
@@ -163,3 +168,54 @@ class UserProfileAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EmailPreferenceAPIView(APIView):
+    permission_classes = []
+
+    def get_target_user(self, request):
+        """
+        Returns the user to modify.
+        Priority 1: Currently logged-in user (Session/JWT).
+        Priority 2: User identified by valid signature token in URL.
+        """
+        if request.user and request.user.is_authenticated:
+            return request.user
+
+        token = request.query_params.get('token')
+        if token:
+            user = get_user_from_preference_token(token)
+            if user:
+                return user
+
+        return None
+
+    def get(self, request):
+        user = self.get_target_user(request)
+        if not user:
+            return Response(
+                {"detail": "You must be logged in or have a valid unsubscribe link to view this page."},
+                status=403
+            )
+
+        user_preferences, _ = UserCommunicationPreference.objects.get_or_create(user=user)
+        serializer = UserCommunicationPreferenceSerializer(user_preferences)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        user = self.get_target_user(request)
+        if not user:
+            return Response(
+                {"detail": "You must be logged in or have a valid unsubscribe link to perform this action."},
+                status=403
+            )
+
+        user_preferences, _ = UserCommunicationPreference.objects.get_or_create(user=user)
+        serializer = UserCommunicationPreferenceSerializer(
+            user_preferences, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)

@@ -2,6 +2,8 @@ import uuid
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -61,3 +63,22 @@ class WishListItem(models.Model):
     class Meta:
         ordering = ['date_created']
         verbose_name_plural = 'Wish Lists Items'
+
+class UserCommunicationPreference(models.Model):
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='communication_preferences'
+    )
+    allow_marketing = models.BooleanField(default=True)
+    allow_newsletter = models.BooleanField(default=True)
+    allow_product_updates = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Preferences for {self.user.email}"
+
+@receiver(post_save, sender=User)
+def create_user_prefs(sender, instance, created, **kwargs):
+    if created:
+        UserCommunicationPreference.objects.create(user=instance)

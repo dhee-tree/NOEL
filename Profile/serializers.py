@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Profile.models import UserProfile
+from Profile.models import UserProfile, UserCommunicationPreference
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -80,3 +80,8 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
 
         # Update the UserProfile fields
         return super().update(instance, validated_data)
+
+class UserCommunicationPreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCommunicationPreference
+        fields = ['allow_marketing', 'allow_newsletter', 'allow_product_updates']
