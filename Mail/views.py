@@ -5,6 +5,12 @@ from Profile.models import UserProfile
 from Auth.utils import VerificationManager
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from django.utils.html import strip_tags
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 
@@ -34,3 +40,33 @@ class ResendVerificationView(LoginRequiredMixin, View):
             messages.error(
                 request, 'Verification email failed! Please try again.')
             return redirect('resend_code')
+
+
+class ContactAPIView(APIView):
+    """Public contact endpoint. Accepts name, email, subject, message."""
+
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data or {}
+        name = data.get('name')
+        email = data.get('email')
+        subject = data.get('subject')
+        message = data.get('message')
+
+        if not name or not email or not message:
+            return Response({"error": "name, email and message are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # basic email validation
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({"error": "Invalid email address."}, status=status.HTTP_400_BAD_REQUEST)
+
+        mail_manager = MailManager(email)
+        sent = mail_manager.send_contact_message(
+            name=name, message=message, subject=subject)
+        if sent:
+            return Response({"detail": "Message sent."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Failed to send message."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

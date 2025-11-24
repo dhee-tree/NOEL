@@ -57,15 +57,23 @@ class MailManager():
             print(e)
             return False
         
-    def send_contact_message(self, name, message):
-        """Sends an email to the admin with a contact message"""
-        subject = 'Contact message from {}'.format(name)
-        html_message = render_to_string('mail/contact_message.html', {'name': name, 'message': message, 'email': self.email})
+    def send_contact_message(self, name, message, subject=None):
+        """Sends an email to the admin with a contact message
+
+        Args:
+            name: sender name
+            message: message body
+            subject: optional subject line provided by sender
+        """
+        subject_header = subject if subject else f'Contact message from {name}'
+        html_message = render_to_string('mail/contact_message.html', {
+                                        'name': name, 'message': message, 'email': self.email, 'subject': subject})
         plain_message = strip_tags(html_message)
         from_email = self.from_email
         to = config('ADMIN_EMAIL')
         try:
-            send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            send_mail(subject_header, plain_message, from_email,
+                      [to], html_message=html_message)
             return True
         except Exception as e:
             print(e)
