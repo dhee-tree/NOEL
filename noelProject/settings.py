@@ -177,6 +177,17 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Throttling: ScopedRateThrottle is used by views that set `throttle_scope`.
+REST_FRAMEWORK.setdefault('DEFAULT_THROTTLE_CLASSES', [])
+REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = [
+    'rest_framework.throttling.ScopedRateThrottle',
+]
+REST_FRAMEWORK.setdefault('DEFAULT_THROTTLE_RATES', {})
+REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update({
+    # limit password reset requests to a few per hour per client
+    'password_reset': '5/hour',
+})
+
 # JWT settings
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
