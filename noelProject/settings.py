@@ -34,6 +34,8 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 FRONTEND_URL = config("FRONTEND_URL")
 
+APP_ENV = config("APP_ENV", default="ldevelopment")
+
 
 # Application definition
 

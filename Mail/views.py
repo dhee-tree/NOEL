@@ -11,6 +11,7 @@ from rest_framework import status, permissions
 from django.utils.html import strip_tags
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 # Create your views here.
 
@@ -53,6 +54,9 @@ class ContactAPIView(APIView):
         email = data.get('email')
         subject = data.get('subject')
         message = data.get('message')
+
+        if getattr(settings, 'APP_ENV', 'development') != 'production':
+            subject = f"{settings.APP_ENV.upper()} - {subject}"
 
         if not name or not email or not message:
             return Response({"error": "name, email and message are required."}, status=status.HTTP_400_BAD_REQUEST)
