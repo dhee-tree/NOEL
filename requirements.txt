@@ -1,5 +1,5 @@
 amqp==5.3.1
-asgiref==3.8.1
+asgiref==3.11.0
 attrs==25.3.0
 billiard==4.2.1
 cachetools==5.5.2
@@ -12,10 +12,11 @@ click-plugins==1.1.1
 click-repl==0.3.0
 colorama==0.4.6
 dj-database-url==2.1.0
-Django==5.1.4
+Django==6.0
 django-cors-headers==4.7.0
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
+drf-spectacular==0.28.0
 google-auth==2.40.3
 gunicorn==23.0.0
 idna==3.10
@@ -41,8 +42,7 @@ sqlparse==0.5.0
 typing_extensions==4.8.0
 tzdata==2023.3
 uritemplate==4.2.0
-urllib3==2.5.0
+urllib3==2.6.0
 vine==5.1.0
 wcwidth==0.2.13
 whitenoise==6.6.0
-redis==5.0.1
